@@ -6,10 +6,15 @@
     <title>Your Name - Shopify Developer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
+        /* CSS Reset and Variables */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -19,20 +24,24 @@
             overflow-x: hidden;
         }
 
+        /* 3D Canvas Styles */
         #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: 1;
+            z-index: 1; /* Behind content */
+            pointer-events: none; /* Allows clicking through the canvas */
+            opacity: 0.6; /* Slight fade so text is readable */
         }
 
         .content {
             position: relative;
-            z-index: 2;
+            z-index: 2; /* In front of canvas */
         }
 
+        /* Navigation */
         nav {
             position: fixed;
             top: 20px;
@@ -40,6 +49,10 @@
             z-index: 100;
             display: flex;
             gap: 30px;
+            background: rgba(10, 10, 10, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
         }
 
         nav a {
@@ -48,12 +61,15 @@
             font-size: 14px;
             transition: color 0.3s ease;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         nav a:hover {
             color: #fff;
         }
 
+        /* Sections */
         section {
             min-height: 100vh;
             display: flex;
@@ -62,17 +78,20 @@
             padding: 60px 40px;
         }
 
+        /* Hero Section */
         .hero {
             flex-direction: column;
             text-align: left;
             max-width: 800px;
             width: 100%;
+            margin: 0 auto;
         }
 
         .hero-label {
             font-size: 18px;
-            color: #888;
+            color: #00ff88; /* Accent color */
             margin-bottom: 20px;
+            font-family: monospace;
         }
 
         .hero h1 {
@@ -93,7 +112,7 @@
 
         .hero-roles span {
             padding-left: 10px;
-            border-left: 3px solid #555;
+            border-left: 3px solid #00ff88;
         }
 
         .scroll-hint {
@@ -111,9 +130,12 @@
             50% { transform: translateX(-50%) translateY(-10px); }
         }
 
+        /* About Section */
         .about-section {
             max-width: 900px;
             width: 100%;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .about-section h2 {
@@ -129,6 +151,7 @@
             margin-bottom: 30px;
         }
 
+        /* Projects Section */
         .projects-section {
             flex-direction: column;
             align-items: flex-start;
@@ -165,6 +188,7 @@
         .project-year {
             font-size: 16px;
             color: #666;
+            font-family: monospace;
         }
 
         .project-tags {
@@ -180,6 +204,7 @@
             border-radius: 4px;
             font-size: 13px;
             color: #888;
+            border: 1px solid #333;
         }
 
         .project-description {
@@ -201,26 +226,15 @@
             font-size: 80px;
             position: relative;
             overflow: hidden;
+            border: 1px solid #333;
         }
 
-        .project-image::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
-            background-size: 200% 200%;
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-        }
-
+        /* Contact Section */
         .contact-section {
             flex-direction: column;
             max-width: 900px;
             width: 100%;
+            align-items: flex-start;
         }
 
         .contact-section h2 {
@@ -231,18 +245,20 @@
 
         .contact-links {
             display: flex;
-            gap: 20px;
+            gap: 40px;
         }
 
         .contact-links a {
             color: #888;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 24px;
             transition: color 0.3s ease;
+            border-bottom: 1px solid transparent;
         }
 
         .contact-links a:hover {
-            color: #fff;
+            color: #00ff88;
+            border-bottom: 1px solid #00ff88;
         }
 
         footer {
@@ -251,12 +267,16 @@
             color: #555;
             font-size: 13px;
             border-top: 1px solid #1a1a1a;
+            background: #050505;
+            position: relative;
+            z-index: 2;
         }
 
         @media (max-width: 768px) {
             nav {
                 right: 20px;
                 gap: 15px;
+                padding: 10px;
             }
 
             section {
@@ -347,39 +367,8 @@
                 </p>
                 <div class="project-image">🎂</div>
             </div>
-
-            <div class="project">
-                <div class="project-header">
-                    <h3>Performance Optimization</h3>
-                    <div class="project-year">2023</div>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">Performance</span>
-                    <span class="tag">SEO</span>
-                    <span class="tag">Lighthouse</span>
-                </div>
-                <p class="project-description">
-                    Conducted a comprehensive performance audit and optimization of the Charlie Oven website. Implemented lazy loading for images, optimized JavaScript delivery, reduced CSS bloat, and improved overall site structure. Achieved 90+ Lighthouse scores across all metrics and significantly improved organic search visibility.
-                </p>
-                <div class="project-image">⚡</div>
-            </div>
-
-            <div class="project">
-                <div class="project-header">
-                    <h3>Subscription Integration</h3>
-                    <div class="project-year">2023</div>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">Shopify Apps</span>
-                    <span class="tag">Subscriptions</span>
-                    <span class="tag">Customer Retention</span>
-                </div>
-                <p class="project-description">
-                    Integrated and customized a subscription app for Charlie Oven's regular customers. Developed custom theme sections to showcase subscription options, created a user-friendly management interface, and implemented email templates for subscription notifications. This feature has significantly improved customer retention and recurring revenue.
-                </p>
-                <div class="project-image">📦</div>
-            </div>
-        </section>
+            
+            </section>
 
         <section id="contact" class="contact-section">
             <h2>Contact</h2>
@@ -398,34 +387,48 @@
     </footer>
 
     <script>
-        var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        // --- THREE.JS SETUP ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         
-        var container = document.getElementById('canvas-container');
+        // Setup renderer
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        const container = document.getElementById('canvas-container');
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x0a0a0a, 1);
+        // Set clear color to transparent so CSS background shows through
+        renderer.setClearColor(0x000000, 0); 
         container.appendChild(renderer.domElement);
 
-        var geometry = new THREE.BoxGeometry(15, 10, 8);
-        var edges = new THREE.EdgesGeometry(geometry);
-        var lineMaterial = new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 1 });
-        var wireframe = new THREE.LineSegments(edges, lineMaterial);
+        // --- OBJECTS ---
+        
+        // 1. Main Wireframe Box
+        const geometry = new THREE.BoxGeometry(15, 10, 8);
+        const edges = new THREE.EdgesGeometry(geometry);
+        // Changed color to a visible grey (0x666666) instead of dark grey
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x666666, linewidth: 1 });
+        const wireframe = new THREE.LineSegments(edges, lineMaterial);
         scene.add(wireframe);
 
-        var screenGeom = new THREE.BoxGeometry(12, 7, 0.5);
-        var screenEdges = new THREE.EdgesGeometry(screenGeom);
-        var screenWireframe = new THREE.LineSegments(screenEdges, new THREE.LineBasicMaterial({ color: 0x444444 }));
+        // 2. Secondary "Screen" Box (Accent)
+        const screenGeom = new THREE.BoxGeometry(12, 7, 0.5);
+        const screenEdges = new THREE.EdgesGeometry(screenGeom);
+        // Added a slight Green accent to match the CSS theme
+        const screenWireframe = new THREE.LineSegments(screenEdges, new THREE.LineBasicMaterial({ color: 0x00ff88 }));
         screenWireframe.position.z = 4.5;
         scene.add(screenWireframe);
 
+        // Camera Positioning
         camera.position.z = 30;
-        camera.position.y = 5;
+        camera.position.y = 0;
 
-        var mouseX = 0;
-        var mouseY = 0;
-        var scrollPosition = 0;
+        // --- ANIMATION STATE ---
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let scrollPosition = 0;
 
+        // --- EVENT LISTENERS ---
         function onMouseMove(e) {
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -438,20 +441,32 @@
         document.addEventListener('mousemove', onMouseMove);
         window.addEventListener('scroll', onScroll);
 
+        // --- ANIMATION LOOP ---
         function animate() {
             requestAnimationFrame(animate);
 
-            wireframe.rotation.x = mouseY * 0.3 + scrollPosition * 0.0003;
-            wireframe.rotation.y = mouseX * 0.3 + scrollPosition * 0.0005;
+            // Smooth mouse movement
+            targetX = mouseX * 0.5;
+            targetY = mouseY * 0.5;
+
+            // Rotate based on mouse and scroll
+            // We use lerp-like logic here effectively by adding small increments, 
+            // but for simplicity, we map directly to scroll/mouse
+            wireframe.rotation.x += 0.001 + (mouseY * 0.01);
+            wireframe.rotation.y += 0.002 + (mouseX * 0.01);
+
+            // Add scroll effect (rotate object as you scroll down)
+            wireframe.rotation.z = scrollPosition * 0.001;
             
-            screenWireframe.rotation.x = wireframe.rotation.x;
-            screenWireframe.rotation.y = wireframe.rotation.y;
+            // Sync the inner box
+            screenWireframe.rotation.copy(wireframe.rotation);
 
             renderer.render(scene, camera);
         }
 
         animate();
 
+        // --- RESIZE HANDLER ---
         function onResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -460,8 +475,12 @@
 
         window.addEventListener('resize', onResize);
 
+        // --- NAVIGATION SCROLL ---
         function scrollToSection(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            const element = document.getElementById(id);
+            if(element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
         }
     </script>
 </body>
