@@ -8,68 +8,95 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
-        /* --- RETRO COLOR PALETTE --- */
         :root {
-            --bg-color: #f3d2b3; /* The signature Peach color */
-            --text-color: #2c2c2c; /* Dark Charcoal for high contrast */
+            --bg-color: #f3d2b3; 
+            --text-color: #2c2c2c; 
             --accent-color: #d15858;
         }
 
-        /* --- RESET & BASICS --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'VT323', monospace; /* The "Terminal" font */
+            font-family: 'VT323', monospace;
             font-size: 24px;
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* --- 3D CANVAS (Background) --- */
+        /* --- 3D CANVAS (Now Absolute, not Fixed) --- */
+        /* This keeps it STUCK at the top. It won't scroll with you. */
         #canvas-container {
-            position: fixed;
+            position: absolute; 
             top: 0;
             left: 0;
             width: 100%;
-            height: 55vh; /* Occupies top half of screen */
-            z-index: 1;
-            pointer-events: none; /* Mouse clicks go through it */
-            opacity: 0.9;
+            height: 60vh; /* Takes up top 60% of page */
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
         }
 
-        /* --- MAIN LAYOUT --- */
+        /* --- LAYOUT --- */
         .container {
             max-width: 720px;
-            /* Pushes content down so it starts under the 3D object */
-            margin: 45vh auto 0; 
-            padding: 20px;
+            margin: 0 auto;
             position: relative;
             z-index: 2;
+            padding: 20px;
+        }
+
+        /* --- HERO SECTION (Transparent background) --- */
+        .hero-section {
+            height: 60vh; /* Matches canvas height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+        }
+
+        /* --- CONTENT SECTION (Solid background) --- */
+        /* This covers the 3D object as you scroll up */
+        .content-section {
+            background-color: var(--bg-color); 
+            min-height: 100vh;
+            padding-top: 50px;
         }
 
         /* --- TYPOGRAPHY --- */
         h1, h2, h3 {
-            font-family: 'Press Start 2P', cursive; /* The "Gameboy" font */
+            font-family: 'Press Start 2P', cursive;
             text-transform: uppercase;
             line-height: 1.5;
             margin-bottom: 25px;
         }
 
-        h1 { 
-            font-size: 32px; 
-            margin-bottom: 30px; 
-            letter-spacing: -2px;
+        /* TYPEWRITER EFFECT STYLES */
+        .typewriter h1 {
+            overflow: hidden; 
+            border-right: .15em solid orange; 
+            white-space: nowrap; 
+            margin: 0 auto; 
+            letter-spacing: -2px; 
+            animation: 
+                typing 3.5s steps(30, end),
+                blink-caret .75s step-end infinite;
+        }
+
+        /* The typing animation */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        /* The cursor blinking animation */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--text-color); }
         }
 
         h2 { 
@@ -88,7 +115,7 @@
             margin-right: auto;
         }
 
-        /* --- NAVIGATION (Sticky Top Left) --- */
+        /* --- NAVIGATION --- */
         .nav-bar {
             position: fixed;
             top: 25px;
@@ -110,19 +137,10 @@
             font-family: 'Press Start 2P', cursive;
             font-size: 12px;
             box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: transform 0.1s;
         }
 
-        .nav-btn:hover {
-            background: #2c2c2c;
-            transform: translate(-1px, -1px);
-            box-shadow: 6px 6px 0px rgba(0,0,0,0.2);
-        }
-
-        .nav-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-        }
+        .nav-btn:hover { background: #2c2c2c; transform: translate(-1px, -1px); }
 
         /* --- UI ELEMENTS --- */
         .separator {
@@ -130,7 +148,6 @@
             letter-spacing: 3px;
             opacity: 0.4;
             font-family: monospace;
-            font-size: 18px;
         }
 
         .tag-container {
@@ -142,26 +159,23 @@
         }
 
         .tag {
-            border: 2px dotted var(--text-color); /* The specific dotted look */
+            border: 2px dotted var(--text-color);
             padding: 8px 12px;
             font-family: 'Press Start 2P', cursive;
             font-size: 10px;
             text-transform: uppercase;
-            background: transparent;
             color: var(--text-color);
-            transition: all 0.2s;
         }
 
         .tag:hover {
             background: var(--text-color);
             color: var(--bg-color);
-            cursor: default;
         }
 
         /* --- PROJECTS --- */
         .project-card {
             margin-bottom: 80px;
-            text-align: left; /* Align text left for readability */
+            text-align: left;
             border-left: 4px solid var(--text-color);
             padding-left: 20px;
         }
@@ -176,12 +190,7 @@
             margin-bottom: 10px;
         }
 
-        .year-label {
-            font-family: 'Press Start 2P';
-            font-size: 10px;
-            margin-left: 10px;
-            color: #666;
-        }
+        .year-label { font-family: 'Press Start 2P'; font-size: 10px; margin-left: 10px; color: #666; }
 
         .project-links a {
             display: inline-block;
@@ -190,29 +199,15 @@
             color: var(--text-color);
             border-bottom: 2px solid var(--text-color);
             font-weight: bold;
-            font-size: 20px;
         }
 
-        .project-links a:hover {
-            background: var(--text-color);
-            color: var(--bg-color);
-        }
-
-        /* --- FOOTER --- */
         footer {
             margin-top: 120px;
-            font-size: 16px;
-            opacity: 0.6;
             padding-bottom: 40px;
             font-family: 'Press Start 2P';
             font-size: 10px;
-        }
-
-        /* --- MOBILE --- */
-        @media (max-width: 600px) {
-            h1 { font-size: 24px; }
-            .container { margin-top: 40vh; padding: 15px; }
-            .project-card { text-align: center; border-left: none; border-top: 4px solid var(--text-color); padding-top: 20px; padding-left: 0; }
+            opacity: 0.6;
+            text-align: center;
         }
     </style>
 </head>
@@ -221,124 +216,110 @@
     <div id="canvas-container"></div>
 
     <div class="nav-bar">
-        <a href="#home" class="nav-btn" title="Home">H</a>
-        <a href="#projects" class="nav-btn" title="Projects">P</a>
-        <a href="#contact" class="nav-btn" title="Contact">@</a>
+        <a href="#home" class="nav-btn">H</a>
+        <a href="#projects" class="nav-btn">P</a>
+        <a href="#contact" class="nav-btn">@</a>
     </div>
 
-    <div class="container" id="home">
+    <div class="container">
         
-        <div style="margin-bottom: 20px;">
-            <span style="font-family: 'Press Start 2P'; font-size: 12px; background: #2c2c2c; color: #f3d2b3; padding: 5px 10px;">HI THERE.</span>
-        </div>
-        
-        <h1>I'm Abhi Pandrate</h1>
-        
-        <div class="tag-container">
-            <span class="tag">Shopify Developer</span>
-            <span class="tag">Theme Specialist</span>
-            <span class="tag">Liquid</span>
-        </div>
-
-        <div class="separator">----------------------------------------</div>
-
-        <p>
-            My name is <strong>Abhi Pandrate</strong>. I am a Shopify developer focused on building high-performance e-commerce experiences.
-        </p>
-        <p>
-            I specialize in bridging the gap between design and functionality, creating custom themes that help brands scale.
-        </p>
-
-        <div class="separator">----------------------------------------</div>
-
-        <h2 id="projects">Projects</h2>
-        <div class="separator">...........</div>
-
-        <div class="project-card">
-            <div>
-                <div class="project-title">Charlie Oven</div>
-                <span class="year-label">2024 - PRESENT</span>
+        <div id="home" class="hero-section">
+            <div style="margin-bottom: 20px;">
+                <span style="font-family: 'Press Start 2P'; font-size: 12px; background: #2c2c2c; color: #f3d2b3; padding: 5px 10px;">HI THERE.</span>
             </div>
-
-            <div class="tag-container" style="justify-content: flex-start;">
-                <span class="tag">Shopify Plus</span>
-                <span class="tag">Liquid</span>
-                <span class="tag">JS</span>
-            </div>
-
-            <p>
-                Lead developer for a DTC outdoor living brand. I transitioned the store to Online Store 2.0 architecture and built custom product configurators.
-            </p>
-            <p>
-                Key achievements include a custom "Build Your Bundle" section using the AJAX API, dynamic metafields for product specs, and a 40% improvement in Core Web Vitals.
-            </p>
             
-            <div class="project-links">
-                <a href="#">View Site →</a>
+            <div class="typewriter">
+                <h1>I'm Abhi Pandrate</h1>
+            </div>
+            
+            <div class="tag-container">
+                <span class="tag">Shopify Developer</span>
+                <span class="tag">Theme Specialist</span>
             </div>
         </div>
 
-        <div class="project-card">
-            <div>
-                <div class="project-title">Custom Cake Builder</div>
-                <span class="year-label">2024</span>
-            </div>
-
-            <div class="tag-container" style="justify-content: flex-start;">
-                <span class="tag">Vanilla JS</span>
-                <span class="tag">CSS Grid</span>
-                <span class="tag">Cart API</span>
-            </div>
-
+        <div class="content-section">
             <p>
-                A fully interactive customization tool allowing customers to design custom cakes. Features include flavor selection, size options, and dynamic price calculation without external apps.
+                My name is <strong>Abhi Pandrate</strong>. I am a Shopify developer focused on building high-performance e-commerce experiences.
+            </p>
+            <p>
+                I specialize in bridging the gap between design and functionality, creating custom themes that help brands scale.
             </p>
 
-            <div class="project-links">
-                <a href="#">View Demo →</a>
+            <div class="separator">----------------------------------------</div>
+
+            <h2 id="projects">Projects</h2>
+            <div class="separator">...........</div>
+
+            <div class="project-card">
+                <div>
+                    <div class="project-title">Charlie Oven</div>
+                    <span class="year-label">2024 - PRESENT</span>
+                </div>
+                <div class="tag-container" style="justify-content: flex-start;">
+                    <span class="tag">Shopify Plus</span>
+                    <span class="tag">Liquid</span>
+                    <span class="tag">JS</span>
+                </div>
+                <p>
+                    Lead developer for a DTC outdoor living brand. I transitioned the store to Online Store 2.0 architecture and built custom product configurators.
+                </p>
+                <div class="project-links">
+                    <a href="#">View Site →</a>
+                </div>
             </div>
+
+            <div class="project-card">
+                <div>
+                    <div class="project-title">Custom Cake Builder</div>
+                    <span class="year-label">2024</span>
+                </div>
+                <div class="tag-container" style="justify-content: flex-start;">
+                    <span class="tag">Vanilla JS</span>
+                    <span class="tag">CSS Grid</span>
+                    <span class="tag">Cart API</span>
+                </div>
+                <p>
+                    A fully interactive customization tool allowing customers to design custom cakes. Features include flavor selection and dynamic price calculation.
+                </p>
+                <div class="project-links">
+                    <a href="#">View Demo →</a>
+                </div>
+            </div>
+
+            <div class="separator">----------------------------------------</div>
+
+            <h2 id="contact">Contact</h2>
+            <p>Reach out for collaborations.</p>
+            
+            <div class="tag-container">
+                <a href="mailto:your@email.com" class="tag">Email</a>
+                <a href="#" target="_blank" class="tag">LinkedIn</a>
+                <a href="#" target="_blank" class="tag">GitHub</a>
+            </div>
+
+            <footer>
+                COPYRIGHT © 2024 ABHI PANDRATE
+            </footer>
         </div>
-
-        <div class="separator">----------------------------------------</div>
-
-        <h2 id="contact">Contact</h2>
-        <p>Reach out for collaborations or freelance work.</p>
-        
-        <div class="tag-container">
-            <a href="mailto:your@email.com" class="tag">Email</a>
-            <a href="#" target="_blank" class="tag">LinkedIn</a>
-            <a href="#" target="_blank" class="tag">GitHub</a>
-        </div>
-
-        <footer>
-            COPYRIGHT © 2024 ABHI PANDRATE
-            <br><br>
-            BUILT WITH HTML, CSS & THREE.JS
-        </footer>
-
     </div>
 
     <script>
         // --- THREE.JS SETUP ---
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.55), 0.1, 1000);
-        
-        // We set alpha: true to make the background transparent
+        // Adjust camera aspect to match the canvas height (60vh)
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.6), 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
-        // Set size to match the CSS height of the container (55vh)
-        renderer.setSize(window.innerWidth, window.innerHeight * 0.55);
+        // Match CSS height
+        renderer.setSize(window.innerWidth, window.innerHeight * 0.6);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // --- THE OBJECT (Wireframe Icosahedron) ---
-        // This shape looks "techy" but retro
-        const geometry = new THREE.IcosahedronGeometry(2.2, 0);
+        // --- OBJECT ---
+        const geometry = new THREE.IcosahedronGeometry(2.5, 0);
         const edges = new THREE.EdgesGeometry(geometry);
-        
-        // Color matches the text color (#2c2c2c)
         const material = new THREE.LineBasicMaterial({ color: 0x2c2c2c, linewidth: 2 });
         const wireframe = new THREE.LineSegments(edges, material);
-        
         scene.add(wireframe);
 
         camera.position.z = 5;
@@ -347,7 +328,6 @@
         let mouseX = 0;
         let mouseY = 0;
 
-        // Track mouse for subtle interaction
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -355,23 +335,17 @@
 
         function animate() {
             requestAnimationFrame(animate);
-
-            // Constant slow rotation
-            wireframe.rotation.x += 0.003;
-            wireframe.rotation.y += 0.003;
-
-            // Interactive rotation based on mouse
-            wireframe.rotation.x += mouseY * 0.01;
-            wireframe.rotation.y += mouseX * 0.01;
-
+            // Rotate the object
+            wireframe.rotation.x += 0.003 + (mouseY * 0.005);
+            wireframe.rotation.y += 0.003 + (mouseX * 0.005);
             renderer.render(scene, camera);
         }
 
         animate();
 
-        // --- RESIZE HANDLER ---
+        // Handle Resize
         window.addEventListener('resize', () => {
-            const height = window.innerHeight * 0.55;
+            const height = window.innerHeight * 0.6;
             camera.aspect = window.innerWidth / height;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, height);
