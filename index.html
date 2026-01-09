@@ -1,126 +1,468 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Abhi Pandrate | Shopify Developer</title>
-  <meta name="description" content="Shopify developer specialising in store setup, theme customisation, and fixes." />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name - Shopify Developer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a0a;
+            color: #e8e8e8;
+            overflow-x: hidden;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        nav {
+            position: fixed;
+            top: 20px;
+            right: 40px;
+            z-index: 100;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: #fff;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+        }
+
+        .hero {
+            flex-direction: column;
+            text-align: left;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .hero-label {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(60px, 12vw, 120px);
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 40px;
+            line-height: 1;
+        }
+
+        .hero-roles {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 24px;
+            color: #888;
+        }
+
+        .hero-roles span {
+            padding-left: 10px;
+            border-left: 3px solid #555;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 14px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .about-section {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .about-section h2 {
+            font-size: 48px;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .about-section p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .projects-section {
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 1000px;
+            width: 100%;
+            padding: 100px 40px;
+        }
+
+        .projects-section h2 {
+            font-size: 48px;
+            margin-bottom: 60px;
+            font-weight: 700;
+        }
+
+        .project {
+            width: 100%;
+            margin-bottom: 100px;
+            border-top: 1px solid #222;
+            padding-top: 60px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 30px;
+        }
+
+        .project h3 {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .project-year {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .project-description {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #aaa;
+            max-width: 800px;
+        }
+
+        .project-image {
+            width: 100%;
+            height: 400px;
+            background: #1a1a1a;
+            margin-top: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
+            background-size: 200% 200%;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .contact-section {
+            flex-direction: column;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .contact-section h2 {
+            font-size: 48px;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .contact-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .contact-links a:hover {
+            color: #fff;
+        }
+
+        footer {
+            padding: 60px 40px;
+            text-align: center;
+            color: #555;
+            font-size: 13px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                right: 20px;
+                gap: 15px;
+            }
+
+            section {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 60px;
+            }
+
+            .project h3 {
+                font-size: 28px;
+            }
+
+            .project-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div id="canvas-container"></div>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="container">
-      <h1>Shopify Developer</h1>
-      <p class="subtitle">
-        Store setup, theme customisation, and fixes for conversion-focused Shopify stores.
-      </p>
-      <a class="cta" href="https://www.fiverr.com/YOURUSERNAME" target="_blank">
-        Hire me on Fiverr
-      </a>
+    <nav>
+        <a onclick="scrollToSection('home')">Home</a>
+        <a onclick="scrollToSection('about')">About</a>
+        <a onclick="scrollToSection('projects')">Projects</a>
+        <a onclick="scrollToSection('contact')">Contact</a>
+    </nav>
+
+    <div class="content">
+        <section id="home" class="hero">
+            <div class="hero-label">Hi there, I'm</div>
+            <h1>Your Name</h1>
+            <div class="hero-roles">
+                <span>Shopify Developer</span>
+                <span>Theme Specialist</span>
+            </div>
+            <div class="scroll-hint">Scroll ↓</div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h2>Hi there</h2>
+            <p>
+                My name is [Your Name], I'm a Shopify developer specializing in custom theme development. I have a passion for creating beautiful, high-performing online stores that help businesses grow.
+            </p>
+            <p>
+                Over the past 2 years, I've focused primarily on developing and maintaining the Charlie Oven bakery website, where I've honed my skills in Liquid templating, custom sections, and performance optimization.
+            </p>
+            <p>
+                Below are details of some of the projects I have developed during my time as a Shopify developer.
+            </p>
+        </section>
+
+        <section id="projects" class="projects-section">
+            <h2>Projects</h2>
+
+            <div class="project">
+                <div class="project-header">
+                    <h3>Charlie Oven - Main Theme</h3>
+                    <div class="project-year">2023-24</div>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">Shopify</span>
+                    <span class="tag">Liquid</span>
+                    <span class="tag">Custom Theme</span>
+                    <span class="tag">Responsive Design</span>
+                </div>
+                <p class="project-description">
+                    Developed a custom Shopify theme for Charlie Oven, a local bakery specializing in artisan breads and pastries. The theme features a warm, inviting design with custom product sections, recipe blog integration, and optimized mobile experience. Implemented custom metafields for product ingredients and allergen information.
+                </p>
+                <div class="project-image">🥐</div>
+            </div>
+
+            <div class="project">
+                <div class="project-header">
+                    <h3>Custom Product Builder</h3>
+                    <div class="project-year">2024</div>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">Shopify API</span>
+                    <span class="tag">Custom Functionality</span>
+                </div>
+                <p class="project-description">
+                    Built an interactive product customization tool for Charlie Oven allowing customers to create custom cake orders. Features include flavor selection, size options, topping choices, and dynamic price calculation. The tool integrates seamlessly with Shopify's cart and checkout system.
+                </p>
+                <div class="project-image">🎂</div>
+            </div>
+
+            <div class="project">
+                <div class="project-header">
+                    <h3>Performance Optimization</h3>
+                    <div class="project-year">2023</div>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">Performance</span>
+                    <span class="tag">SEO</span>
+                    <span class="tag">Lighthouse</span>
+                </div>
+                <p class="project-description">
+                    Conducted a comprehensive performance audit and optimization of the Charlie Oven website. Implemented lazy loading for images, optimized JavaScript delivery, reduced CSS bloat, and improved overall site structure. Achieved 90+ Lighthouse scores across all metrics and significantly improved organic search visibility.
+                </p>
+                <div class="project-image">⚡</div>
+            </div>
+
+            <div class="project">
+                <div class="project-header">
+                    <h3>Subscription Integration</h3>
+                    <div class="project-year">2023</div>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">Shopify Apps</span>
+                    <span class="tag">Subscriptions</span>
+                    <span class="tag">Customer Retention</span>
+                </div>
+                <p class="project-description">
+                    Integrated and customized a subscription app for Charlie Oven's regular customers. Developed custom theme sections to showcase subscription options, created a user-friendly management interface, and implemented email templates for subscription notifications. This feature has significantly improved customer retention and recurring revenue.
+                </p>
+                <div class="project-image">📦</div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>Contact</h2>
+            <p style="color: #aaa; margin-bottom: 30px;">Reach out on:</p>
+            <div class="contact-links">
+                <a href="mailto:your@email.com">Email</a>
+                <a href="#" target="_blank">LinkedIn</a>
+                <a href="#" target="_blank">GitHub</a>
+            </div>
+        </section>
     </div>
-  </header>
 
-  <!-- ABOUT -->
-  <section class="section">
-    <div class="container">
-      <h2>What I Do</h2>
-      <p>
-        I specialise in building and improving Shopify stores for small businesses and
-        growing brands. My work focuses on clean Shopify implementations — setting up
-        stores correctly, customising themes without breaking updates, and fixing issues
-        that impact performance or conversions.
-      </p>
-      <p>
-        I work directly with Shopify themes, Liquid, and the admin backend rather than
-        relying on shortcuts or generic builders.
-      </p>
-    </div>
-  </section>
+    <footer>
+        <p>Developed + Designed by [Your Name]</p>
+        <p style="margin-top: 10px;">COPYRIGHT © 2024 [Your Name]</p>
+    </footer>
 
-  <!-- SERVICES -->
-  <section class="section section-dark">
-    <div class="container">
-      <h2>Shopify Services</h2>
-      <ul class="services">
-        <li>Shopify store setup & launch</li>
-        <li>Theme customisation & sections</li>
-        <li>Product & collection structuring</li>
-        <li>Navigation & menu setup</li>
-        <li>Shopify app integration</li>
-        <li>Bug fixes & storefront issues</li>
-        <li>Speed, UX & conversion improvements</li>
-        <li>Ongoing Shopify support</li>
-      </ul>
-    </div>
-  </section>
+    <script>
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        var container = document.getElementById('canvas-container');
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x0a0a0a, 1);
+        container.appendChild(renderer.domElement);
 
-  <!-- PROJECTS -->
-  <section class="section">
-    <div class="container">
-      <h2>Projects</h2>
+        var geometry = new THREE.BoxGeometry(15, 10, 8);
+        var edges = new THREE.EdgesGeometry(geometry);
+        var lineMaterial = new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 1 });
+        var wireframe = new THREE.LineSegments(edges, lineMaterial);
+        scene.add(wireframe);
 
-      <div class="project">
-        <h3>Demo Shopify Store</h3>
-        <p class="project-desc">
-          Built a complete Shopify demo store from scratch to demonstrate real-world
-          setup and theme customisation.
-        </p>
+        var screenGeom = new THREE.BoxGeometry(12, 7, 0.5);
+        var screenEdges = new THREE.EdgesGeometry(screenGeom);
+        var screenWireframe = new THREE.LineSegments(screenEdges, new THREE.LineBasicMaterial({ color: 0x444444 }));
+        screenWireframe.position.z = 4.5;
+        scene.add(screenWireframe);
 
-        <ul class="project-list">
-          <li>Homepage layout and custom sections</li>
-          <li>Product page templates</li>
-          <li>Collection structure and navigation</li>
-          <li>Theme styling with Liquid, HTML, and CSS</li>
-          <li>App setup and configuration</li>
-        </ul>
+        camera.position.z = 30;
+        camera.position.y = 5;
 
-        <p class="project-tools">
-          <strong>Tools:</strong> Shopify, Liquid, HTML, CSS
-        </p>
-      </div>
-    </div>
-  </section>
+        var mouseX = 0;
+        var mouseY = 0;
+        var scrollPosition = 0;
 
-  <!-- PROCESS -->
-  <section class="section section-dark">
-    <div class="container">
-      <h2>How I Work</h2>
-      <ol class="process">
-        <li>Understand requirements and store goals</li>
-        <li>Review existing setup or theme</li>
-        <li>Implement changes cleanly in Shopify</li>
-        <li>Test storefront flows and responsiveness</li>
-        <li>Deliver with clear handover or support</li>
-      </ol>
-    </div>
-  </section>
+        function onMouseMove(e) {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        }
 
-  <!-- TECH -->
-  <section class="section">
-    <div class="container">
-      <h2>Tech Stack</h2>
-      <div class="tech">
-        <span>Shopify</span>
-        <span>Liquid</span>
-        <span>HTML</span>
-        <span>CSS</span>
-        <span>GitHub</span>
-        <span>Shopify Apps</span>
-      </div>
-    </div>
-  </section>
+        function onScroll() {
+            scrollPosition = window.scrollY;
+        }
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <p>Available for Shopify freelance work</p>
-      <a class="cta secondary" href="https://www.fiverr.com/YOURUSERNAME" target="_blank">
-        Hire me on Fiverr
-      </a>
-    </div>
-  </footer>
+        document.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('scroll', onScroll);
 
+        function animate() {
+            requestAnimationFrame(animate);
+
+            wireframe.rotation.x = mouseY * 0.3 + scrollPosition * 0.0003;
+            wireframe.rotation.y = mouseX * 0.3 + scrollPosition * 0.0005;
+            
+            screenWireframe.rotation.x = wireframe.rotation.x;
+            screenWireframe.rotation.y = wireframe.rotation.y;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        window.addEventListener('resize', onResize);
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
