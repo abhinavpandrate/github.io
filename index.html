@@ -9,294 +9,281 @@
 
     <style>
         :root {
-            --bg-color: #f3d2b3; /* The exact beige from your screenshot */
+            --bg-color: #f3d2b3; 
             --text-color: #2c2c2c;
-            --accent: #d15858;
-            --spacing: 60px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
+            margin: 0;
+            padding: 0;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'VT323', monospace; /* The body font */
-            font-size: 22px;
-            line-height: 1.5;
+            font-family: 'VT323', monospace;
             overflow-x: hidden;
         }
 
-        /* --- 3D CANVAS --- */
+        /* The Canvas stays fixed in the background */
         #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 50vh; /* Takes up top half */
+            height: 100vh;
             z-index: 1;
+            pointer-events: none; /* Let us scroll "through" it */
+        }
+
+        /* This ghost div forces the page to be scrollable */
+        .scroll-spacer {
+            height: 200vh; /* Determines how long the "zoom" takes */
             pointer-events: none;
         }
 
-        /* --- LAYOUT --- */
-        .container {
-            max-width: 700px;
-            margin: 45vh auto 0; /* Push content down so it sits under the 3D object */
-            padding: 20px;
+        /* The actual content starts further down */
+        .content-container {
             position: relative;
             z-index: 2;
-            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            /* We add margin-top so the content appears AFTER we zoom out */
+            margin-top: -50vh; 
+            padding-bottom: 100px;
+            background: rgba(243, 210, 179, 0.9); /* Fade in background */
+            padding: 40px;
+            border-radius: 20px;
+            opacity: 0; /* Hidden at first, JS will fade it in */
+            transition: opacity 0.5s;
         }
 
-        /* --- TYPOGRAPHY --- */
-        h1, h2, h3 {
-            font-family: 'Press Start 2P', cursive; /* The Blocky Pixel Font */
-            text-transform: uppercase;
-            line-height: 1.4;
-            margin-bottom: 20px;
-        }
-
-        h1 { font-size: 28px; margin-bottom: 40px; }
-        h2 { font-size: 20px; background: #2c2c2c; color: var(--bg-color); display: inline-block; padding: 10px 20px; }
+        h1, h2 { font-family: 'Press Start 2P', cursive; text-transform: uppercase; }
         
-        p {
-            margin-bottom: 20px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* --- NAV BUTTONS (Top Left) --- */
-        .nav-bar {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 100;
-            display: flex;
-            gap: 10px;
-        }
-
-        .nav-btn {
-            background: #4a4a4a;
-            color: white;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
-        }
-
-        .nav-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-        }
-
-        /* --- SEPARATORS --- */
-        .separator {
-            margin: var(--spacing) 0;
-            letter-spacing: 5px;
-            opacity: 0.5;
-            font-family: monospace;
-        }
-
-        /* --- TAGS (The dotted buttons) --- */
-        .tag-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 20px 0;
+        .project-card {
+            border: 4px solid #2c2c2c;
+            padding: 20px;
+            margin-bottom: 40px;
+            background: #fff;
+            box-shadow: 8px 8px 0px #2c2c2c;
         }
 
         .tag {
-            border: 2px dotted var(--text-color);
-            padding: 5px 10px;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            text-transform: uppercase;
-            background: transparent;
-            color: var(--text-color);
-        }
-
-        .tag:hover {
-            background: var(--text-color);
-            color: var(--bg-color);
-            cursor: pointer;
-        }
-
-        /* --- PROJECT SECTION --- */
-        .project-card {
-            margin-bottom: 80px;
-        }
-
-        .year-label {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        a.link-btn {
             display: inline-block;
             background: #2c2c2c;
             color: #f3d2b3;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-family: 'Press Start 2P', cursive;
+            padding: 4px 8px;
+            margin-right: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Scroll hint */
+        .scroll-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            font-family: 'Press Start 2P';
             font-size: 12px;
-            margin-top: 20px;
+            animation: bounce 1s infinite;
         }
 
-        /* --- FOOTER --- */
-        footer {
-            margin-top: 100px;
-            font-size: 16px;
-            opacity: 0.7;
-            padding-bottom: 40px;
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -10px); }
         }
-
     </style>
 </head>
 <body>
 
     <div id="canvas-container"></div>
+    
+    <div class="scroll-spacer"></div>
 
-    <div class="nav-bar">
-        <a href="#home" class="nav-btn">H</a>
-        <a href="#projects" class="nav-btn">P</a>
-        <a href="#contact" class="nav-btn">@</a>
-    </div>
+    <div class="scroll-hint">SCROLL TO START SYSTEM</div>
 
-    <div class="container" id="home">
-        <div style="background: #2c2c2c; color: #f3d2b3; padding: 10px 20px; display: inline-block; margin-bottom: 20px; font-family: 'Press Start 2P'; font-size: 12px;">
-            Hi there.
-        </div>
-        
-        <h1>I'm Abhi Pandrate</h1>
-        
-        <div class="tag-container">
-            <span class="tag">Shopify Developer</span>
-            <span class="tag">Theme Specialist</span>
-        </div>
-
-        <div class="separator">----------------------------------------</div>
-
-        <p>
-            My name is Abhi Pandrate. I'm a developer specializing in <strong>Shopify</strong> and <strong>E-commerce</strong> solutions.
-            I have a passion for all things technology and design, from Liquid programming to conversion rate optimization.
-        </p>
-        <p>
-            Below are details of some of the projects I have developed since starting my journey in 2024.
-        </p>
-
-        <div class="separator">----------------------------------------</div>
-
-        <h2 id="projects">Projects</h2>
-        <div class="separator">...........</div>
+    <div class="content-container" id="main-content">
+        <h1>Projects</h1>
+        <p>Selected works from 2024-Present</p>
+        <br>
 
         <div class="project-card">
-            <div style="background: #2c2c2c; color: #f3d2b3; padding: 5px 10px; display: inline-block; font-family: 'Press Start 2P'; margin-bottom: 10px;">
-                Charlie Oven
-            </div>
-            <span class="year-label">2024 - PRESENT</span>
-
-            <div class="tag-container">
+            <h2>Charlie Oven</h2>
+            <p>Lead developer for Outdoor Living brand. Transitioned store to OS 2.0.</p>
+            <div>
                 <span class="tag">Liquid</span>
                 <span class="tag">JavaScript</span>
-                <span class="tag">Shopify 2.0</span>
-                <span class="tag">UI/UX</span>
+                <span class="tag">Shopify</span>
             </div>
-
-            <p>
-                Lead developer for an Outdoor Living brand. I transitioned the store to Online Store 2.0 architecture and built custom product configurators.
-            </p>
-            <p>
-                Features included a custom "Build Your Bundle" section using the AJAX API, dynamic metafields for product specs, and core web vital optimization.
-            </p>
-            
-            <a href="#" class="link-btn">charlieoven.com</a>
         </div>
 
         <div class="project-card">
-            <div style="background: #2c2c2c; color: #f3d2b3; padding: 5px 10px; display: inline-block; font-family: 'Press Start 2P'; margin-bottom: 10px;">
-                Cake Builder Tool
-            </div>
-            <span class="year-label">2024</span>
-
-            <div class="tag-container">
+            <h2>Cake Builder</h2>
+            <p>Interactive JS customization tool for custom cake orders.</p>
+            <div>
                 <span class="tag">Vanilla JS</span>
                 <span class="tag">CSS Grid</span>
-                <span class="tag">Cart API</span>
             </div>
-
-            <p>
-                A fully interactive customization tool allowing customers to design custom cakes. Built without external apps to ensure maximum speed and code control.
-            </p>
         </div>
 
-        <div class="separator">----------------------------------------</div>
-
-        <h2 id="contact">Contact</h2>
-        <p>Reach out for collaborations or freelance work.</p>
-        
-        <div class="tag-container">
-            <a href="mailto:your@email.com" class="tag">Email</a>
-            <a href="#" class="tag">LinkedIn</a>
-            <a href="#" class="tag">GitHub</a>
+        <div class="project-card">
+            <h2>Contact</h2>
+            <p>abhi@pandrate.dev</p>
         </div>
-
-        <footer>
-            COPYRIGHT © 2024 ABHI PANDRATE
-        </footer>
-
     </div>
 
     <script>
-        // --- RETRO 3D SETUP ---
+        // --- CONFIGURATION ---
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false }); // Antialias false helps the retro look
+        // Add some fog to blend the floor into the background color
+        scene.fog = new THREE.Fog(0xf3d2b3, 10, 50);
         
-        renderer.setSize(window.innerWidth, window.innerHeight / 2); // Only take up half screen
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xf3d2b3, 1); // Match CSS background
+        renderer.shadowMap.enabled = true; // Turn on shadows
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // CREATE A RETRO GEOMETRY (Wireframe Icosahedron looks cool/techy)
-        const geometry = new THREE.IcosahedronGeometry(2, 0);
-        const edges = new THREE.EdgesGeometry(geometry);
-        const material = new THREE.LineBasicMaterial({ color: 0x2c2c2c, linewidth: 2 });
-        const wireframe = new THREE.LineSegments(edges, material);
+        // --- LIGHTS ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 10, 7);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        // --- BUILD THE RETRO COMPUTER (Procedural Geometry) ---
+        const computerGroup = new THREE.Group();
+
+        // 1. Monitor Material (Beige Plastic)
+        const plasticMat = new THREE.MeshStandardMaterial({ color: 0xe0cda8, roughness: 0.6 });
         
-        scene.add(wireframe);
+        // 2. The Main Box (Monitor Casing)
+        const monitorGeo = new THREE.BoxGeometry(10, 8, 6);
+        const monitor = new THREE.Mesh(monitorGeo, plasticMat);
+        monitor.castShadow = true;
+        computerGroup.add(monitor);
 
-        camera.position.z = 5;
+        // 3. The "Screen" Texture (Canvas API)
+        // We draw text onto a 2D canvas and use it as a texture!
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
+        
+        // Draw Screen Background (Black/Dark Green)
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, 1024, 1024);
+        
+        // Draw Text
+        ctx.font = 'bold 80px "Courier New", monospace';
+        ctx.fillStyle = '#00ff00'; // Retro Green Text
+        ctx.fillText('> SYSTEM BOOT...', 50, 150);
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 120px "Courier New", monospace';
+        ctx.fillText('HI, I\'M ABHI', 50, 350);
+        
+        ctx.font = '60px "Courier New", monospace';
+        ctx.fillText('Shopify Developer', 50, 450);
+        ctx.fillText('Theme Specialist', 50, 530);
+        
+        ctx.fillStyle = '#00ff00';
+        ctx.fillText('_', 50, 650); // Blinking cursor visual
 
-        // Animation Loop
+        const screenTexture = new THREE.CanvasTexture(canvas);
+        const screenMat = new THREE.MeshBasicMaterial({ map: screenTexture });
+        const screenGeo = new THREE.PlaneGeometry(8, 6);
+        const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+        screenMesh.position.z = 3.01; // Slightly in front of casing
+        computerGroup.add(screenMesh);
+
+        // 4. Base/Stand
+        const standGeo = new THREE.BoxGeometry(8, 1, 6);
+        const stand = new THREE.Mesh(standGeo, plasticMat);
+        stand.position.y = -4.5;
+        stand.castShadow = true;
+        computerGroup.add(stand);
+
+        // 5. Floor (Shadow catcher)
+        const floorGeo = new THREE.PlaneGeometry(100, 100);
+        const floorMat = new THREE.ShadowMaterial({ opacity: 0.1 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.y = -5;
+        floor.receiveShadow = true;
+        computerGroup.add(floor);
+
+        scene.add(computerGroup);
+
+        // --- ANIMATION LOGIC ---
+        
+        // Initial Camera Position (Looking right at the screen)
+        // We want it to look like a 2D screen at first
+        camera.position.set(0, 0, 6.5); 
+        
+        let scrollPercent = 0;
+
+        function onScroll() {
+            // Calculate how far down we are (0 to 1)
+            scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            
+            // Limit zoom effect to the first part of scrolling
+            // We want the zoom to finish quickly so the user can read content
+            let zoomProgress = Math.min(window.scrollY / 500, 1); 
+
+            // Interpolate Camera Position
+            // Start Z: 6.5 (Close) -> End Z: 20 (Far)
+            const zPos = 6.5 + (13.5 * zoomProgress);
+            camera.position.z = zPos;
+
+            // Start Y: 0 (Center) -> End Y: 5 (Looking down slightly)
+            const yPos = 0 + (5 * zoomProgress);
+            camera.position.y = yPos;
+
+            camera.lookAt(0, 0, 0);
+
+            // Hide/Show Content based on scroll
+            const content = document.getElementById('main-content');
+            const hint = document.querySelector('.scroll-hint');
+            
+            if (zoomProgress > 0.8) {
+                content.style.opacity = '1';
+                hint.style.opacity = '0';
+            } else {
+                content.style.opacity = '0';
+                hint.style.opacity = '1';
+            }
+        }
+
+        // Mouse Parallax (Make the computer rotate slightly when mouse moves)
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) / 1000;
+            mouseY = (e.clientY - window.innerHeight / 2) / 1000;
+        });
+
+        window.addEventListener('scroll', onScroll);
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
         function animate() {
             requestAnimationFrame(animate);
 
-            // Rotate layout
-            wireframe.rotation.x += 0.005;
-            wireframe.rotation.y += 0.005;
+            // Subtle rotation based on mouse
+            computerGroup.rotation.y += (mouseX - computerGroup.rotation.y) * 0.1;
+            computerGroup.rotation.x += (mouseY - computerGroup.rotation.x) * 0.1;
 
             renderer.render(scene, camera);
         }
 
         animate();
-
-        // Handle Resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / (window.innerHeight / 2);
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight / 2);
-        });
     </script>
 </body>
 </html>
