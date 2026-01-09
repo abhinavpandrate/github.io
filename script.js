@@ -1,4 +1,4 @@
-
+// --- DATA FOR MODALS (UK LOCALISED) ---
 const workflowData = {
     finance: {
         title: "Finance & Accounting Sync",
@@ -73,12 +73,47 @@ function closeModal() {
 
 // --- COPY EMAIL FUNCTION ---
 function copyEmail() {
-    // UPDATED EMAIL
     navigator.clipboard.writeText("abhinavpandrate@gmail.com");
     const btn = document.querySelector('.copy-email-btn');
+    const originalText = btn.innerText;
     btn.innerText = "[ COPIED! ]";
-    setTimeout(() => btn.innerText = "[ Copy Address ]", 2000);
+    btn.style.background = "#25d366"; // Green flash
+    btn.style.color = "#000";
+    
+    setTimeout(() => {
+        btn.innerText = "[ Copy Address ]";
+        btn.style.background = "#2c2c2c";
+        btn.style.color = "#f3d2b3";
+    }, 2000);
 }
+
+// --- SCROLL SPY FOR NAVIGATION ---
+window.addEventListener('scroll', () => {
+    const sections = ['home', 'shopify', 'automation', 'contact'];
+    const navLinks = {
+        home: document.getElementById('nav-home'),
+        shopify: document.getElementById('nav-shopify'),
+        automation: document.getElementById('nav-automation'),
+        contact: document.getElementById('nav-contact')
+    };
+
+    let current = '';
+
+    sections.forEach(section => {
+        const element = document.getElementById(section);
+        if (element) {
+            const sectionTop = element.offsetTop;
+            if (scrollY >= (sectionTop - 300)) {
+                current = section;
+            }
+        }
+    });
+
+    Object.values(navLinks).forEach(link => link.classList.remove('active'));
+    if (navLinks[current]) {
+        navLinks[current].classList.add('active');
+    }
+});
 
 // --- THREE.JS SETUP ---
 const scene = new THREE.Scene();
