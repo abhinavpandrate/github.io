@@ -3,10 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Abhi Pandrate - Shopify Developer</title>
+    <title>Abhi Pandrate — Shopify Developer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS Reset and Variables */
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #fff; /* White accent for high contrast like edh.dev */
+            --spacing: 80px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,470 +30,363 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #0a0a0a;
-            color: #e8e8e8;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
             overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* 3D Canvas Styles */
+        /* --- CANVAS BACKGROUND --- */
         #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: 1; /* Behind content */
-            pointer-events: none; /* Allows clicking through the canvas */
-            opacity: 0.6; /* Slight fade so text is readable */
+            z-index: 0;
+            opacity: 0.3; /* Very subtle */
+            pointer-events: none;
         }
 
-        .content {
-            position: relative;
-            z-index: 2; /* In front of canvas */
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 20px;
-            right: 40px;
-            z-index: 100;
-            display: flex;
-            gap: 30px;
-            background: rgba(10, 10, 10, 0.8);
-            padding: 10px 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-        }
-
-        nav a {
-            color: #888;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s ease;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        nav a:hover {
-            color: #fff;
-        }
-
-        /* Sections */
-        section {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 40px;
-        }
-
-        /* Hero Section */
-        .hero {
-            flex-direction: column;
-            text-align: left;
-            max-width: 800px;
-            width: 100%;
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 800px; /* Tighter width for that "document" feel */
             margin: 0 auto;
-        }
-
-        .hero-label {
-            font-size: 18px;
-            color: #00ff88; /* Accent color */
-            margin-bottom: 20px;
-            font-family: monospace;
-        }
-
-        .hero h1 {
-            font-size: clamp(60px, 12vw, 120px);
-            font-weight: 900;
-            color: #fff;
-            margin-bottom: 40px;
-            line-height: 1;
-        }
-
-        .hero-roles {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 24px;
-            color: #888;
-        }
-
-        .hero-roles span {
-            padding-left: 10px;
-            border-left: 3px solid #00ff88;
-        }
-
-        .scroll-hint {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #666;
-            font-size: 14px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-10px); }
-        }
-
-        /* About Section */
-        .about-section {
-            max-width: 900px;
-            width: 100%;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .about-section h2 {
-            font-size: 48px;
-            margin-bottom: 40px;
-            font-weight: 700;
-        }
-
-        .about-section p {
-            font-size: 18px;
-            line-height: 1.8;
-            color: #aaa;
-            margin-bottom: 30px;
-        }
-
-        /* Projects Section */
-        .projects-section {
-            flex-direction: column;
-            align-items: flex-start;
-            max-width: 1000px;
-            width: 100%;
-            padding: 100px 40px;
-        }
-
-        .projects-section h2 {
-            font-size: 48px;
-            margin-bottom: 60px;
-            font-weight: 700;
-        }
-
-        .project {
-            width: 100%;
-            margin-bottom: 100px;
-            border-top: 1px solid #222;
-            padding-top: 60px;
-        }
-
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 30px;
-        }
-
-        .project h3 {
-            font-size: 36px;
-            font-weight: 700;
-        }
-
-        .project-year {
-            font-size: 16px;
-            color: #666;
-            font-family: monospace;
-        }
-
-        .project-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .tag {
-            padding: 8px 16px;
-            background: #1a1a1a;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #888;
-            border: 1px solid #333;
-        }
-
-        .project-description {
-            font-size: 17px;
-            line-height: 1.8;
-            color: #aaa;
-            max-width: 800px;
-        }
-
-        .project-image {
-            width: 100%;
-            height: 400px;
-            background: #1a1a1a;
-            margin-top: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #333;
-        }
-
-        /* Contact Section */
-        .contact-section {
-            flex-direction: column;
-            max-width: 900px;
-            width: 100%;
-            align-items: flex-start;
-        }
-
-        .contact-section h2 {
-            font-size: 48px;
-            margin-bottom: 40px;
-            font-weight: 700;
-        }
-
-        .contact-links {
-            display: flex;
-            gap: 40px;
-        }
-
-        .contact-links a {
-            color: #888;
-            text-decoration: none;
-            font-size: 24px;
-            transition: color 0.3s ease;
-            border-bottom: 1px solid transparent;
-        }
-
-        .contact-links a:hover {
-            color: #00ff88;
-            border-bottom: 1px solid #00ff88;
-        }
-
-        footer {
-            padding: 60px 40px;
-            text-align: center;
-            color: #555;
-            font-size: 13px;
-            border-top: 1px solid #1a1a1a;
-            background: #050505;
+            padding: 0 20px;
             position: relative;
             z-index: 2;
         }
 
-        @media (max-width: 768px) {
-            nav {
-                right: 20px;
-                gap: 15px;
-                padding: 10px;
-            }
+        /* --- NAVIGATION --- */
+        nav {
+            padding: 40px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
 
-            section {
-                padding: 40px 20px;
-            }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
 
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        /* --- SECTIONS GENERAL --- */
+        section {
+            padding-bottom: var(--spacing);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: var(--spacing);
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            padding-top: 60px;
+            padding-bottom: 100px;
+            border-bottom: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 64px);
+            font-weight: 600;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-muted);
+            max-width: 500px;
+        }
+
+        /* --- WORK LIST (The edh.dev style) --- */
+        .work-list {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .work-item {
+            display: grid;
+            grid-template-columns: 120px 1fr; /* Year on left, Content on right */
+            gap: 20px;
+            transition: opacity 0.3s;
+        }
+
+        .work-item:hover {
+            opacity: 0.8;
+        }
+
+        .work-year {
+            font-family: 'Courier New', monospace;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding-top: 6px; /* Align with title */
+        }
+
+        .work-content h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .work-content h3 a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .work-description {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tech-pill {
+            font-size: 12px;
+            border: 1px solid #333;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #888;
+        }
+
+        /* --- CONTACT SECTION (Like the reference) --- */
+        .contact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 24px;
+            padding: 20px 0;
+            border-bottom: 1px solid #222;
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover {
+            padding-left: 20px;
+            border-bottom: 1px solid #fff;
+            color: #fff;
+        }
+
+        .contact-arrow {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover .contact-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        footer {
+            padding: 40px 0;
+            color: #444;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 600px) {
+            .work-item {
+                grid-template-columns: 1fr; /* Stack on mobile */
+                gap: 5px;
+            }
+            
             .hero h1 {
-                font-size: 60px;
-            }
-
-            .project h3 {
-                font-size: 28px;
-            }
-
-            .project-header {
-                flex-direction: column;
-                gap: 10px;
+                font-size: 36px;
             }
         }
     </style>
 </head>
 <body>
+
     <div id="canvas-container"></div>
 
-    <nav>
-        <a onclick="scrollToSection('home')">Home</a>
-        <a onclick="scrollToSection('about')">About</a>
-        <a onclick="scrollToSection('projects')">Projects</a>
-        <a onclick="scrollToSection('contact')">Contact</a>
-    </nav>
-
-    <div class="content">
-        <section id="home" class="hero">
-            <div class="hero-label">Hi there, I'm</div>
-            <h1>Abhi Pandrate</h1>
-            <div class="hero-roles">
-                <span>Shopify Developer</span>
-                <span>Theme Specialist</span>
+    <div class="container">
+        <nav>
+            <div class="logo">ABHI PANDRATE</div>
+            <div class="nav-links">
+                <a onclick="document.getElementById('work').scrollIntoView()">Work</a>
+                <a onclick="document.getElementById('about').scrollIntoView()">About</a>
+                <a onclick="document.getElementById('contact').scrollIntoView()">Contact</a>
             </div>
-            <div class="scroll-hint">Scroll ↓</div>
+        </nav>
+
+        <section class="hero">
+            <h1>I build high-performance <br> Shopify experiences.</h1>
+            <p>Developer focused on custom Liquid themes, headless architecture, and e-commerce optimization.</p>
         </section>
 
-        <section id="about" class="about-section">
-            <h2>Hi there</h2>
-            <p>
-                My name is [Abhi Pandrate], I'm a Shopify developer specializing in custom theme development. I have a passion for creating beautiful, high-performing online stores that help businesses grow.
-            </p>
-            <p>
-                Over the past 2 years, I've focused primarily on developing and maintaining the Charlie Oven bakery website, where I've honed my skills in Liquid templating, custom sections, and performance optimization.
-            </p>
-            <p>
-                Below are details of some of the projects I have developed during my time as a Shopify developer.
+        <section id="work">
+            <h2>Selected Work</h2>
+            <div class="work-list">
+                
+                <div class="work-item">
+                    <div class="work-year">2024 — PRES</div>
+                    <div class="work-content">
+                        <h3><a href="#">Charlie Oven</a></h3>
+                        <div class="work-description">
+                            Lead developer for a DTC outdoor living brand. Transitioned the store to Online Store 2.0 architecture and built custom product configurators.
+                        </div>
+                        <ul style="color: #666; font-size: 14px; margin-bottom: 15px; padding-left: 20px;">
+                            <li>Developed a custom "Build Your Bundle" section using JavaScript & AJAX API.</li>
+                            <li>Improved Core Web Vitals (LCP) by 40% via script optimization.</li>
+                            <li>Implemented dynamic metafields for complex product data.</li>
+                        </ul>
+                        <div class="tech-stack">
+                            <span class="tech-pill">Shopify Plus</span>
+                            <span class="tech-pill">Liquid</span>
+                            <span class="tech-pill">JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-item">
+                    <div class="work-year">2024</div>
+                    <div class="work-content">
+                        <h3><a href="#">Subscription Integration</a></h3>
+                        <div class="work-description">
+                            Custom integration of Recharge subscriptions into a standard Shopify theme, creating a seamless UX for recurring orders.
+                        </div>
+                        <div class="tech-stack">
+                            <span class="tech-pill">App Integration</span>
+                            <span class="tech-pill">CSS Grid</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="about">
+            <h2>About</h2>
+            <p style="color: #aaa; font-size: 18px; max-width: 600px;">
+                I'm Abhi, a Shopify Developer starting my journey in 2024. I specialize in bridging the gap between design and functionality. 
+                <br><br>
+                Currently, I am working deeply with the <strong>Charlie Oven</strong> team to scale their e-commerce operations through code. My focus is on writing clean, maintainable Liquid code and building interfaces that drive conversions.
             </p>
         </section>
 
-        <section id="projects" class="projects-section">
-            <h2>Projects</h2>
-
-            <div class="project">
-                <div class="project-header">
-                    <h3>Charlie Oven - Main Theme</h3>
-                    <div class="project-year">2023-24</div>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">Shopify</span>
-                    <span class="tag">Liquid</span>
-                    <span class="tag">Custom Theme</span>
-                    <span class="tag">Responsive Design</span>
-                </div>
-                <p class="project-description">
-                    Developed a custom Shopify theme for Charlie Oven, a local bakery specializing in artisan breads and pastries. The theme features a warm, inviting design with custom product sections, recipe blog integration, and optimized mobile experience. Implemented custom metafields for product ingredients and allergen information.
-                </p>
-                <div class="project-image">🥐</div>
-            </div>
-
-            <div class="project">
-                <div class="project-header">
-                    <h3>Custom Product Builder</h3>
-                    <div class="project-year">2024</div>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">JavaScript</span>
-                    <span class="tag">Shopify API</span>
-                    <span class="tag">Custom Functionality</span>
-                </div>
-                <p class="project-description">
-                    Built an interactive product customization tool for Charlie Oven allowing customers to create custom cake orders. Features include flavor selection, size options, topping choices, and dynamic price calculation. The tool integrates seamlessly with Shopify's cart and checkout system.
-                </p>
-                <div class="project-image">🎂</div>
-            </div>
-            
-            </section>
-
-        <section id="contact" class="contact-section">
-            <h2>Contact</h2>
-            <p style="color: #aaa; margin-bottom: 30px;">Reach out on:</p>
-            <div class="contact-links">
-                <a href="mailto:your@email.com">Email</a>
-                <a href="#" target="_blank">LinkedIn</a>
-                <a href="#" target="_blank">GitHub</a>
+        <section id="contact">
+            <h2>Get in Touch</h2>
+            <div class="contact-grid">
+                <a href="mailto:your@email.com" class="contact-link">
+                    Email
+                    <span class="contact-arrow">→</span>
+                </a>
+                <a href="#" target="_blank" class="contact-link">
+                    LinkedIn
+                    <span class="contact-arrow">→</span>
+                </a>
+                <a href="#" target="_blank" class="contact-link">
+                    GitHub
+                    <span class="contact-arrow">→</span>
+                </a>
             </div>
         </section>
+
+        <footer>
+            <span>© 2024 Abhi Pandrate</span>
+            <span>Shopify Developer</span>
+        </footer>
     </div>
 
-    <footer>
-        <p>Developed + Designed by [Abhi Pandrate]</p>
-        <p style="margin-top: 10px;">COPYRIGHT © 2024 [Abhi Pandrate]</p>
-    </footer>
-
     <script>
-        // --- THREE.JS SETUP ---
+        // --- THREE.JS SETUP (Minimalist Version) ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         
-        // Setup renderer
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        const container = document.getElementById('canvas-container');
         renderer.setSize(window.innerWidth, window.innerHeight);
-        // Set clear color to transparent so CSS background shows through
         renderer.setClearColor(0x000000, 0); 
-        container.appendChild(renderer.domElement);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // --- OBJECTS ---
+        // Created a "Network" of particles instead of a box to look more "Tech"
+        const geometry = new THREE.IcosahedronGeometry(10, 1);
+        const wireframe = new THREE.WireframeGeometry(geometry);
         
-        // 1. Main Wireframe Box
-        const geometry = new THREE.BoxGeometry(15, 10, 8);
-        const edges = new THREE.EdgesGeometry(geometry);
-        // Changed color to a visible grey (0x666666) instead of dark grey
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x666666, linewidth: 1 });
-        const wireframe = new THREE.LineSegments(edges, lineMaterial);
-        scene.add(wireframe);
+        // Very subtle grey lines
+        const line = new THREE.LineSegments(wireframe);
+        line.material.depthTest = false;
+        line.material.opacity = 0.15; // Low opacity for background feel
+        line.material.transparent = true;
+        line.material.color = new THREE.Color(0xffffff);
+        
+        scene.add(line);
 
-        // 2. Secondary "Screen" Box (Accent)
-        const screenGeom = new THREE.BoxGeometry(12, 7, 0.5);
-        const screenEdges = new THREE.EdgesGeometry(screenGeom);
-        // Added a slight Green accent to match the CSS theme
-        const screenWireframe = new THREE.LineSegments(screenEdges, new THREE.LineBasicMaterial({ color: 0x00ff88 }));
-        screenWireframe.position.z = 4.5;
-        scene.add(screenWireframe);
+        camera.position.z = 25;
 
-        // Camera Positioning
-        camera.position.z = 30;
-        camera.position.y = 0;
-
-        // --- ANIMATION STATE ---
+        // Animation Loop
         let mouseX = 0;
         let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        let scrollPosition = 0;
 
-        // --- EVENT LISTENERS ---
-        function onMouseMove(e) {
+        document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-        }
+        });
 
-        function onScroll() {
-            scrollPosition = window.scrollY;
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('scroll', onScroll);
-
-        // --- ANIMATION LOOP ---
         function animate() {
             requestAnimationFrame(animate);
 
-            // Smooth mouse movement
-            targetX = mouseX * 0.5;
-            targetY = mouseY * 0.5;
+            // Very slow, classy rotation
+            line.rotation.x += 0.001;
+            line.rotation.y += 0.001;
 
-            // Rotate based on mouse and scroll
-            // We use lerp-like logic here effectively by adding small increments, 
-            // but for simplicity, we map directly to scroll/mouse
-            wireframe.rotation.x += 0.001 + (mouseY * 0.01);
-            wireframe.rotation.y += 0.002 + (mouseX * 0.01);
-
-            // Add scroll effect (rotate object as you scroll down)
-            wireframe.rotation.z = scrollPosition * 0.001;
-            
-            // Sync the inner box
-            screenWireframe.rotation.copy(wireframe.rotation);
+            // Subtle interaction with mouse
+            line.rotation.x += mouseY * 0.005;
+            line.rotation.y += mouseX * 0.005;
 
             renderer.render(scene, camera);
         }
 
         animate();
 
-        // --- RESIZE HANDLER ---
-        function onResize() {
+        // Resize
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        window.addEventListener('resize', onResize);
-
-        // --- NAVIGATION SCROLL ---
-        function scrollToSection(id) {
-            const element = document.getElementById(id);
-            if(element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
+        });
     </script>
 </body>
 </html>
