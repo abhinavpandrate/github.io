@@ -181,7 +181,7 @@
             font-weight: bold;
         }
 
-        /* --- INTEGRATION GRID (ICONS) --- */
+        /* --- INTEGRATION GRID (With Actual Logos) --- */
         .integration-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -196,21 +196,26 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            transition: transform 0.2s;
+        }
+
+        .integration-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.4);
         }
 
         .app-icons {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            min-width: 100px;
         }
 
         .app-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-            background: #fff;
+            width: 35px;
+            height: 35px;
+            /* No border/background needed for SVGs on this background */
             object-fit: contain;
-            border: 1px solid #333;
         }
 
         .arrow {
@@ -228,6 +233,8 @@
         .integration-info span {
             font-size: 16px;
             opacity: 0.8;
+            display: block;
+            line-height: 1.3;
         }
 
         /* --- PROJECT CARD --- */
@@ -392,9 +399,9 @@
             
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://via.placeholder.com/40/00b7ff/FFFFFF?text=X" class="app-icon" alt="Xero">
+                    <img src="https://cdn.simpleicons.org/xero/000000" class="app-icon" alt="Xero">
                 </div>
                 <div class="integration-info">
                     <h4>Finance Sync</h4>
@@ -404,9 +411,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://via.placeholder.com/40/59ff00/000000?text=SS" class="app-icon" alt="ShipStation">
+                    <img src="https://cdn.simpleicons.org/shipstation/000000" class="app-icon" alt="ShipStation">
                 </div>
                 <div class="integration-info">
                     <h4>Fulfillment</h4>
@@ -416,9 +423,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://via.placeholder.com/40/ffffff/000000?text=N" class="app-icon" alt="Notion">
+                    <img src="https://cdn.simpleicons.org/notion/000000" class="app-icon" alt="Notion">
                 </div>
                 <div class="integration-info">
                     <h4>Operations</h4>
@@ -428,9 +435,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://via.placeholder.com/40/ff0000/FFFFFF?text=SL" class="app-icon" alt="Slack">
+                    <img src="https://cdn.simpleicons.org/slack/000000" class="app-icon" alt="Slack">
                 </div>
                 <div class="integration-info">
                     <h4>Team Alerts</h4>
@@ -440,13 +447,25 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://via.placeholder.com/40/1a1a1a/FFFFFF?text=G" class="app-icon" alt="Google Sheets">
+                    <img src="https://cdn.simpleicons.org/googlesheets/000000" class="app-icon" alt="Google Sheets">
                 </div>
                 <div class="integration-info">
                     <h4>Reporting</h4>
                     <span>Live sales tracker in Google Sheets.</span>
+                </div>
+            </div>
+
+            <div class="integration-item">
+                <div class="app-icons">
+                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
+                    <div class="arrow">-></div>
+                    <img src="https://cdn.simpleicons.org/make/000000" class="app-icon" alt="Make.com">
+                </div>
+                <div class="integration-info">
+                    <h4>Custom Logic</h4>
+                    <span>Complex routing for bundled products.</span>
                 </div>
             </div>
 
