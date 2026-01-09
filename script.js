@@ -1,4 +1,4 @@
-// --- DATA FOR MODALS (UK LOCALISED) ---
+
 const workflowData = {
     finance: {
         title: "Finance & Accounting Sync",
