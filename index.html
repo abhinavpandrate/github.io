@@ -27,17 +27,16 @@
             overflow-x: hidden;
         }
 
-        /* --- 3D CANVAS (Now Absolute, not Fixed) --- */
-        /* This keeps it STUCK at the top. It won't scroll with you. */
+        /* --- 3D CANVAS BLOCK --- */
+        /* Changed to 'relative' so it takes up its own physical space.
+           Text will naturally follow AFTER this block, preventing overlap. */
         #canvas-container {
-            position: absolute; 
-            top: 0;
-            left: 0;
+            position: relative; 
             width: 100%;
-            height: 60vh; /* Takes up top 60% of page */
-            z-index: 0;
+            height: 50vh; /* Takes up top 50% of the screen */
             overflow: hidden;
-            pointer-events: none;
+            display: block;
+            margin-bottom: 20px; /* Space between model and text */
         }
 
         /* --- LAYOUT --- */
@@ -46,25 +45,8 @@
             margin: 0 auto;
             position: relative;
             z-index: 2;
-            padding: 20px;
-        }
-
-        /* --- HERO SECTION (Transparent background) --- */
-        .hero-section {
-            height: 60vh; /* Matches canvas height */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 0 20px 100px 20px; /* Padding bottom for scroll space */
             text-align: center;
-        }
-
-        /* --- CONTENT SECTION (Solid background) --- */
-        /* This covers the 3D object as you scroll up */
-        .content-section {
-            background-color: var(--bg-color); 
-            min-height: 100vh;
-            padding-top: 50px;
         }
 
         /* --- TYPOGRAPHY --- */
@@ -75,7 +57,11 @@
             margin-bottom: 25px;
         }
 
-        /* TYPEWRITER EFFECT STYLES */
+        /* TYPEWRITER EFFECT */
+        .typewriter {
+            display: inline-block;
+        }
+        
         .typewriter h1 {
             overflow: hidden; 
             border-right: .15em solid orange; 
@@ -85,19 +71,11 @@
             animation: 
                 typing 3.5s steps(30, end),
                 blink-caret .75s step-end infinite;
+            font-size: 32px; /* Adjusted size for clean look */
         }
 
-        /* The typing animation */
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-
-        /* The cursor blinking animation */
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--text-color); }
-        }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--text-color); } }
 
         h2 { 
             font-size: 18px; 
@@ -209,11 +187,15 @@
             opacity: 0.6;
             text-align: center;
         }
+
+        /* Mobile Fix */
+        @media (max-width: 600px) {
+            .typewriter h1 { font-size: 18px; white-space: normal; animation: none; border: none; }
+            #canvas-container { height: 40vh; }
+        }
     </style>
 </head>
 <body>
-
-    <div id="canvas-container"></div>
 
     <div class="nav-bar">
         <a href="#home" class="nav-btn">H</a>
@@ -221,9 +203,11 @@
         <a href="#contact" class="nav-btn">@</a>
     </div>
 
+    <div id="canvas-container"></div>
+
     <div class="container">
         
-        <div id="home" class="hero-section">
+        <div id="home">
             <div style="margin-bottom: 20px;">
                 <span style="font-family: 'Press Start 2P'; font-size: 12px; background: #2c2c2c; color: #f3d2b3; padding: 5px 10px;">HI THERE.</span>
             </div>
@@ -238,85 +222,86 @@
             </div>
         </div>
 
-        <div class="content-section">
+        <div class="separator">----------------------------------------</div>
+
+        <p>
+            My name is <strong>Abhi Pandrate</strong>. I am a Shopify developer focused on building high-performance e-commerce experiences.
+        </p>
+        <p>
+            I specialize in bridging the gap between design and functionality, creating custom themes that help brands scale.
+        </p>
+
+        <div class="separator">----------------------------------------</div>
+
+        <h2 id="projects">Projects</h2>
+        <div class="separator">...........</div>
+
+        <div class="project-card">
+            <div>
+                <div class="project-title">Charlie Oven</div>
+                <span class="year-label">2024 - PRESENT</span>
+            </div>
+            <div class="tag-container" style="justify-content: flex-start;">
+                <span class="tag">Shopify Plus</span>
+                <span class="tag">Liquid</span>
+                <span class="tag">JS</span>
+            </div>
             <p>
-                My name is <strong>Abhi Pandrate</strong>. I am a Shopify developer focused on building high-performance e-commerce experiences.
+                Lead developer for a DTC outdoor living brand. I transitioned the store to Online Store 2.0 architecture and built custom product configurators.
             </p>
-            <p>
-                I specialize in bridging the gap between design and functionality, creating custom themes that help brands scale.
-            </p>
-
-            <div class="separator">----------------------------------------</div>
-
-            <h2 id="projects">Projects</h2>
-            <div class="separator">...........</div>
-
-            <div class="project-card">
-                <div>
-                    <div class="project-title">Charlie Oven</div>
-                    <span class="year-label">2024 - PRESENT</span>
-                </div>
-                <div class="tag-container" style="justify-content: flex-start;">
-                    <span class="tag">Shopify Plus</span>
-                    <span class="tag">Liquid</span>
-                    <span class="tag">JS</span>
-                </div>
-                <p>
-                    Lead developer for a DTC outdoor living brand. I transitioned the store to Online Store 2.0 architecture and built custom product configurators.
-                </p>
-                <div class="project-links">
-                    <a href="#">View Site →</a>
-                </div>
+            <div class="project-links">
+                <a href="#">View Site →</a>
             </div>
-
-            <div class="project-card">
-                <div>
-                    <div class="project-title">Custom Cake Builder</div>
-                    <span class="year-label">2024</span>
-                </div>
-                <div class="tag-container" style="justify-content: flex-start;">
-                    <span class="tag">Vanilla JS</span>
-                    <span class="tag">CSS Grid</span>
-                    <span class="tag">Cart API</span>
-                </div>
-                <p>
-                    A fully interactive customization tool allowing customers to design custom cakes. Features include flavor selection and dynamic price calculation.
-                </p>
-                <div class="project-links">
-                    <a href="#">View Demo →</a>
-                </div>
-            </div>
-
-            <div class="separator">----------------------------------------</div>
-
-            <h2 id="contact">Contact</h2>
-            <p>Reach out for collaborations.</p>
-            
-            <div class="tag-container">
-                <a href="mailto:your@email.com" class="tag">Email</a>
-                <a href="#" target="_blank" class="tag">LinkedIn</a>
-                <a href="#" target="_blank" class="tag">GitHub</a>
-            </div>
-
-            <footer>
-                COPYRIGHT © 2024 ABHI PANDRATE
-            </footer>
         </div>
+
+        <div class="project-card">
+            <div>
+                <div class="project-title">Custom Cake Builder</div>
+                <span class="year-label">2024</span>
+            </div>
+            <div class="tag-container" style="justify-content: flex-start;">
+                <span class="tag">Vanilla JS</span>
+                <span class="tag">CSS Grid</span>
+                <span class="tag">Cart API</span>
+            </div>
+            <p>
+                A fully interactive customization tool allowing customers to design custom cakes. Features include flavor selection and dynamic price calculation.
+            </p>
+            <div class="project-links">
+                <a href="#">View Demo →</a>
+            </div>
+        </div>
+
+        <div class="separator">----------------------------------------</div>
+
+        <h2 id="contact">Contact</h2>
+        <p>Reach out for collaborations.</p>
+        
+        <div class="tag-container">
+            <a href="mailto:your@email.com" class="tag">Email</a>
+            <a href="#" target="_blank" class="tag">LinkedIn</a>
+            <a href="#" target="_blank" class="tag">GitHub</a>
+        </div>
+
+        <footer>
+            COPYRIGHT © 2024 ABHI PANDRATE
+        </footer>
+
     </div>
 
     <script>
         // --- THREE.JS SETUP ---
         const scene = new THREE.Scene();
-        // Adjust camera aspect to match the canvas height (60vh)
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.6), 0.1, 1000);
+        // Camera sees the scene
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.5), 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
-        // Match CSS height
-        renderer.setSize(window.innerWidth, window.innerHeight * 0.6);
+        // Size = 50% of screen height to match CSS
+        renderer.setSize(window.innerWidth, window.innerHeight * 0.5);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         // --- OBJECT ---
-        const geometry = new THREE.IcosahedronGeometry(2.5, 0);
+        const geometry = new THREE.IcosahedronGeometry(2.3, 0); // Slightly smaller
         const edges = new THREE.EdgesGeometry(geometry);
         const material = new THREE.LineBasicMaterial({ color: 0x2c2c2c, linewidth: 2 });
         const wireframe = new THREE.LineSegments(edges, material);
@@ -345,7 +330,7 @@
 
         // Handle Resize
         window.addEventListener('resize', () => {
-            const height = window.innerHeight * 0.6;
+            const height = window.innerHeight * 0.5;
             camera.aspect = window.innerWidth / height;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, height);
