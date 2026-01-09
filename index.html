@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abhi Pandrate - Shopify Developer</title>
+    <title>Abhi Pandrate - Shopify & Automation</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -12,6 +12,7 @@
             --bg-color: #f3d2b3; 
             --text-color: #2c2c2c; 
             --accent-color: #d15858;
+            --code-bg: rgba(44, 44, 44, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,30 +23,28 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'VT323', monospace;
-            font-size: 24px;
+            font-size: 22px;
             line-height: 1.6;
             overflow-x: hidden;
         }
 
         /* --- 3D CANVAS BLOCK --- */
-        /* Changed to 'relative' so it takes up its own physical space.
-           Text will naturally follow AFTER this block, preventing overlap. */
         #canvas-container {
             position: relative; 
             width: 100%;
-            height: 50vh; /* Takes up top 50% of the screen */
+            height: 45vh; 
             overflow: hidden;
             display: block;
-            margin-bottom: 20px; /* Space between model and text */
+            margin-bottom: 20px;
         }
 
         /* --- LAYOUT --- */
         .container {
-            max-width: 720px;
+            max-width: 800px;
             margin: 0 auto;
             position: relative;
             z-index: 2;
-            padding: 0 20px 100px 20px; /* Padding bottom for scroll space */
+            padding: 0 20px 100px 20px;
             text-align: center;
         }
 
@@ -57,10 +56,7 @@
             margin-bottom: 25px;
         }
 
-        /* TYPEWRITER EFFECT */
-        .typewriter {
-            display: inline-block;
-        }
+        .typewriter { display: inline-block; }
         
         .typewriter h1 {
             overflow: hidden; 
@@ -71,7 +67,7 @@
             animation: 
                 typing 3.5s steps(30, end),
                 blink-caret .75s step-end infinite;
-            font-size: 32px; /* Adjusted size for clean look */
+            font-size: 28px;
         }
 
         @keyframes typing { from { width: 0 } to { width: 100% } }
@@ -88,7 +84,7 @@
 
         p {
             margin-bottom: 25px;
-            max-width: 620px;
+            max-width: 650px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -113,7 +109,7 @@
             justify-content: center;
             text-decoration: none;
             font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
+            font-size: 10px;
             box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
             transition: transform 0.1s;
         }
@@ -122,7 +118,7 @@
 
         /* --- UI ELEMENTS --- */
         .separator {
-            margin: 50px 0;
+            margin: 40px 0;
             letter-spacing: 3px;
             opacity: 0.4;
             font-family: monospace;
@@ -138,25 +134,122 @@
 
         .tag {
             border: 2px dotted var(--text-color);
-            padding: 8px 12px;
+            padding: 6px 10px;
             font-family: 'Press Start 2P', cursive;
             font-size: 10px;
             text-transform: uppercase;
             color: var(--text-color);
         }
 
-        .tag:hover {
+        .tag.filled {
             background: var(--text-color);
             color: var(--bg-color);
+            border: 2px solid var(--text-color);
         }
 
-        /* --- PROJECTS --- */
+        /* --- SKILLS GRID --- */
+        .skill-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            text-align: left;
+            margin-bottom: 60px;
+        }
+
+        .skill-col {
+            background: var(--code-bg);
+            padding: 20px;
+            border: 2px solid var(--text-color);
+            position: relative;
+        }
+
+        .skill-col h3 {
+            font-size: 16px;
+            border-bottom: 2px dotted var(--text-color);
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .skill-list {
+            list-style: none;
+            font-size: 18px;
+        }
+
+        .skill-list li::before {
+            content: "> ";
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* --- INTEGRATION GRID (ICONS) --- */
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+
+        .integration-item {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid var(--text-color);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .app-icons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: #fff;
+            object-fit: contain;
+            border: 1px solid #333;
+        }
+
+        .arrow {
+            font-family: 'Press Start 2P';
+            font-size: 10px;
+            color: var(--accent-color);
+        }
+
+        .integration-info h4 {
+            font-family: 'Press Start 2P';
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .integration-info span {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        /* --- PROJECT CARD --- */
         .project-card {
-            margin-bottom: 80px;
+            margin-bottom: 60px;
             text-align: left;
             border-left: 4px solid var(--text-color);
             padding-left: 20px;
+            background: rgba(255,255,255,0.1);
         }
+
+        .project-image {
+            width: 100%;
+            height: auto;
+            border: 2px solid var(--text-color);
+            margin: 20px 0;
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.1);
+            filter: grayscale(100%); 
+            transition: filter 0.3s;
+        }
+
+        .project-image:hover { filter: grayscale(0%); }
 
         .project-title {
             background: var(--text-color);
@@ -168,8 +261,6 @@
             margin-bottom: 10px;
         }
 
-        .year-label { font-family: 'Press Start 2P'; font-size: 10px; margin-left: 10px; color: #666; }
-
         .project-links a {
             display: inline-block;
             margin-right: 20px;
@@ -180,7 +271,7 @@
         }
 
         footer {
-            margin-top: 120px;
+            margin-top: 100px;
             padding-bottom: 40px;
             font-family: 'Press Start 2P';
             font-size: 10px;
@@ -188,19 +279,21 @@
             text-align: center;
         }
 
-        /* Mobile Fix */
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
+            .skill-split { grid-template-columns: 1fr; }
+            .integration-grid { grid-template-columns: 1fr; }
             .typewriter h1 { font-size: 18px; white-space: normal; animation: none; border: none; }
-            #canvas-container { height: 40vh; }
+            #canvas-container { height: 35vh; }
         }
     </style>
 </head>
 <body>
 
     <div class="nav-bar">
-        <a href="#home" class="nav-btn">H</a>
-        <a href="#projects" class="nav-btn">P</a>
-        <a href="#contact" class="nav-btn">@</a>
+        <a href="#home" class="nav-btn" title="Home">H</a>
+        <a href="#shopify" class="nav-btn" title="Shopify Work">S</a>
+        <a href="#automation" class="nav-btn" title="Automation">A</a>
+        <a href="#contact" class="nav-btn" title="Contact">@</a>
     </div>
 
     <div id="canvas-container"></div>
@@ -217,23 +310,49 @@
             </div>
             
             <div class="tag-container">
-                <span class="tag">Shopify Developer</span>
-                <span class="tag">Theme Specialist</span>
+                <span class="tag filled">Shopify Developer</span>
+                <span class="tag filled">Automation Maker</span>
             </div>
         </div>
 
         <div class="separator">----------------------------------------</div>
 
         <p>
-            My name is <strong>Abhi Pandrate</strong>. I am a Shopify developer focused on building high-performance e-commerce experiences.
-        </p>
-        <p>
-            I specialize in bridging the gap between design and functionality, creating custom themes that help brands scale.
+            I help e-commerce brands scale by connecting their store to their systems. I build high-performance Shopify themes and design invisible automation engines.
         </p>
 
         <div class="separator">----------------------------------------</div>
 
-        <h2 id="projects">Projects</h2>
+        <h2 id="skills">My Stack</h2>
+        <div class="separator">...........</div>
+
+        <div class="skill-split">
+            <div class="skill-col">
+                <h3>01. Shopify Dev</h3>
+                <ul class="skill-list">
+                    <li>Liquid Templating</li>
+                    <li>Theme Architecture (2.0)</li>
+                    <li>Store Setup & Config</li>
+                    <li>Frontend Optimization</li>
+                    <li>Product Mgmt</li>
+                </ul>
+            </div>
+
+            <div class="skill-col">
+                <h3>02. Automation</h3>
+                <ul class="skill-list">
+                    <li><strong>Make.com</strong> Scenarios</li>
+                    <li><strong>n8n</strong> Workflows</li>
+                    <li>API Integrations</li>
+                    <li>Data Migration</li>
+                    <li>Shopify Flow</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="separator">----------------------------------------</div>
+
+        <h2 id="shopify">Featured Work</h2>
         <div class="separator">...........</div>
 
         <div class="project-card">
@@ -241,41 +360,102 @@
                 <div class="project-title">Charlie Oven</div>
                 <span class="year-label">2024 - PRESENT</span>
             </div>
+            
             <div class="tag-container" style="justify-content: flex-start;">
-                <span class="tag">Shopify Plus</span>
+                <span class="tag">Theme Redesign</span>
+                <span class="tag">UI/UX</span>
                 <span class="tag">Liquid</span>
-                <span class="tag">JS</span>
             </div>
+
+            <img src="https://via.placeholder.com/800x450/2c2c2c/f3d2b3?text=CHARLIE+OVEN+WEBSITE" alt="Charlie Oven Website" class="project-image">
+
             <p>
-                Lead developer for a DTC outdoor living brand. I transitioned the store to Online Store 2.0 architecture and built custom product configurators.
+                <strong>The Goal:</strong> Modernize the storefront and streamline operations.
             </p>
+            <p>
+                I completely rebuilt the theme for better aesthetics and conversion. I also handled full product data setup and inventory management.
+            </p>
+            
             <div class="project-links">
                 <a href="#">View Site →</a>
             </div>
         </div>
 
-        <div class="project-card">
-            <div>
-                <div class="project-title">Custom Cake Builder</div>
-                <span class="year-label">2024</span>
+        <div class="separator">----------------------------------------</div>
+
+        <h2 id="automation">Automation</h2>
+        <p style="margin-bottom: 40px;">
+            I use <strong>Make.com</strong> and <strong>n8n</strong> to connect Shopify with your favorite tools.
+        </p>
+        
+        <div class="integration-grid">
+            
+            <div class="integration-item">
+                <div class="app-icons">
+                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <div class="arrow">-></div>
+                    <img src="https://via.placeholder.com/40/00b7ff/FFFFFF?text=X" class="app-icon" alt="Xero">
+                </div>
+                <div class="integration-info">
+                    <h4>Finance Sync</h4>
+                    <span>Auto-create Xero invoices from new orders.</span>
+                </div>
             </div>
-            <div class="tag-container" style="justify-content: flex-start;">
-                <span class="tag">Vanilla JS</span>
-                <span class="tag">CSS Grid</span>
-                <span class="tag">Cart API</span>
+
+            <div class="integration-item">
+                <div class="app-icons">
+                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <div class="arrow">-></div>
+                    <img src="https://via.placeholder.com/40/59ff00/000000?text=SS" class="app-icon" alt="ShipStation">
+                </div>
+                <div class="integration-info">
+                    <h4>Fulfillment</h4>
+                    <span>Route complex orders to ShipStation instantly.</span>
+                </div>
             </div>
-            <p>
-                A fully interactive customization tool allowing customers to design custom cakes. Features include flavor selection and dynamic price calculation.
-            </p>
-            <div class="project-links">
-                <a href="#">View Demo →</a>
+
+            <div class="integration-item">
+                <div class="app-icons">
+                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <div class="arrow">-></div>
+                    <img src="https://via.placeholder.com/40/ffffff/000000?text=N" class="app-icon" alt="Notion">
+                </div>
+                <div class="integration-info">
+                    <h4>Operations</h4>
+                    <span>Log returns & VIP orders into Notion DB.</span>
+                </div>
             </div>
+
+            <div class="integration-item">
+                <div class="app-icons">
+                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <div class="arrow">-></div>
+                    <img src="https://via.placeholder.com/40/ff0000/FFFFFF?text=SL" class="app-icon" alt="Slack">
+                </div>
+                <div class="integration-info">
+                    <h4>Team Alerts</h4>
+                    <span>Notify team of High Value Orders ($1k+).</span>
+                </div>
+            </div>
+
+            <div class="integration-item">
+                <div class="app-icons">
+                    <img src="https://via.placeholder.com/40/000000/FFFFFF?text=S" class="app-icon" alt="Shopify">
+                    <div class="arrow">-></div>
+                    <img src="https://via.placeholder.com/40/1a1a1a/FFFFFF?text=G" class="app-icon" alt="Google Sheets">
+                </div>
+                <div class="integration-info">
+                    <h4>Reporting</h4>
+                    <span>Live sales tracker in Google Sheets.</span>
+                </div>
+            </div>
+
         </div>
 
         <div class="separator">----------------------------------------</div>
 
         <h2 id="contact">Contact</h2>
-        <p>Reach out for collaborations.</p>
+        <p>Ready to build or automate?</p>
         
         <div class="tag-container">
             <a href="mailto:your@email.com" class="tag">Email</a>
@@ -292,16 +472,14 @@
     <script>
         // --- THREE.JS SETUP ---
         const scene = new THREE.Scene();
-        // Camera sees the scene
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.5), 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.45), 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
-        // Size = 50% of screen height to match CSS
-        renderer.setSize(window.innerWidth, window.innerHeight * 0.5);
+        renderer.setSize(window.innerWidth, window.innerHeight * 0.45);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         // --- OBJECT ---
-        const geometry = new THREE.IcosahedronGeometry(2.3, 0); // Slightly smaller
+        const geometry = new THREE.IcosahedronGeometry(2.3, 0);
         const edges = new THREE.EdgesGeometry(geometry);
         const material = new THREE.LineBasicMaterial({ color: 0x2c2c2c, linewidth: 2 });
         const wireframe = new THREE.LineSegments(edges, material);
@@ -320,7 +498,6 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            // Rotate the object
             wireframe.rotation.x += 0.003 + (mouseY * 0.005);
             wireframe.rotation.y += 0.003 + (mouseX * 0.005);
             renderer.render(scene, camera);
@@ -328,9 +505,8 @@
 
         animate();
 
-        // Handle Resize
         window.addEventListener('resize', () => {
-            const height = window.innerHeight * 0.5;
+            const height = window.innerHeight * 0.45;
             camera.aspect = window.innerWidth / height;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, height);
