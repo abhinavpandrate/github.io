@@ -1,23 +1,23 @@
-// --- DATA FOR MODALS ---
+// --- DATA FOR MODALS (UK LOCALISED) ---
 const workflowData = {
     finance: {
         title: "Finance & Accounting Sync",
-        desc: "Stop manually entering data. This automation ensures your books are always 100% accurate.",
+        desc: "Stop manually entering data. This automation ensures your books are always 100% accurate for VAT returns.",
         steps: [
             "Trigger: New Order Created in Shopify",
             "Logic: Check if order is Paid & Unfulfilled",
             "Action: Create/Update Invoice in Xero",
-            "Action: Email Accountant (Optional)"
+            "Action: Email Chartered Accountant (Optional)"
         ]
     },
     fulfillment: {
         title: "Smart Fulfillment Routing",
-        desc: "Route orders to different warehouses based on customer location or product tag.",
+        desc: "Route orders to different warehouses based on customer location (UK vs EU) or product tag.",
         steps: [
             "Trigger: New Order",
-            "Logic: If tag contains 'East-Coast'",
-            "Action: Send to NY Warehouse (ShipStation)",
-            "Else: Send to LA Warehouse"
+            "Logic: If Shipping Address is 'United Kingdom'",
+            "Action: Send to Manchester Hub (ShipStation)",
+            "Else: Send to EU Distribution Centre"
         ]
     },
     ops: {
@@ -34,7 +34,7 @@ const workflowData = {
         desc: "Celebrate wins and alert the team instantly when big orders come in.",
         steps: [
             "Trigger: New Order",
-            "Logic: If Total > $1,000",
+            "Logic: If Total > £1,000",
             "Action: Send message to #sales-wins Slack channel",
             "Action: Play sound effect (optional)"
         ]
