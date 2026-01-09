@@ -73,7 +73,8 @@ function closeModal() {
 
 // --- COPY EMAIL FUNCTION ---
 function copyEmail() {
-    navigator.clipboard.writeText("your@email.com");
+    // UPDATED EMAIL
+    navigator.clipboard.writeText("abhinavpandrate@gmail.com");
     const btn = document.querySelector('.copy-email-btn');
     btn.innerText = "[ COPIED! ]";
     setTimeout(() => btn.innerText = "[ Copy Address ]", 2000);
