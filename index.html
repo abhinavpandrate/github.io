@@ -181,7 +181,7 @@
             font-weight: bold;
         }
 
-        /* --- INTEGRATION GRID (With Actual Logos) --- */
+        /* --- INTEGRATION GRID (New & Robust) --- */
         .integration-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -190,7 +190,7 @@
         }
 
         .integration-item {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.4);
             border: 2px solid var(--text-color);
             padding: 15px;
             display: flex;
@@ -201,7 +201,7 @@
 
         .integration-item:hover {
             transform: translateY(-2px);
-            background: rgba(255,255,255,0.4);
+            background: #fff;
         }
 
         .app-icons {
@@ -212,10 +212,14 @@
         }
 
         .app-icon {
-            width: 35px;
-            height: 35px;
-            /* No border/background needed for SVGs on this background */
+            width: 36px;
+            height: 36px;
+            /* White background ensures logos like Slack are visible */
+            background: #fff; 
+            border-radius: 6px;
+            padding: 4px;
             object-fit: contain;
+            border: 1px solid #333;
         }
 
         .arrow {
@@ -365,7 +369,7 @@
         <div class="project-card">
             <div>
                 <div class="project-title">Charlie Oven</div>
-                <span class="year-label">2025 - PRESENT</span>
+                <span class="year-label">2024 - PRESENT</span>
             </div>
             
             <div class="tag-container" style="justify-content: flex-start;">
@@ -399,9 +403,9 @@
             
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://cdn.simpleicons.org/xero/000000" class="app-icon" alt="Xero">
+                    <img src="https://cdn.brandfetch.io/xero.com/w/100/h/100" class="app-icon" alt="Xero">
                 </div>
                 <div class="integration-info">
                     <h4>Finance Sync</h4>
@@ -411,9 +415,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://cdn.simpleicons.org/shipstation/000000" class="app-icon" alt="ShipStation">
+                    <img src="https://cdn.brandfetch.io/shipstation.com/w/100/h/100" class="app-icon" alt="ShipStation">
                 </div>
                 <div class="integration-info">
                     <h4>Fulfillment</h4>
@@ -423,9 +427,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://cdn.simpleicons.org/notion/000000" class="app-icon" alt="Notion">
+                    <img src="https://cdn.brandfetch.io/notion.so/w/100/h/100" class="app-icon" alt="Notion">
                 </div>
                 <div class="integration-info">
                     <h4>Operations</h4>
@@ -435,9 +439,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://cdn.simpleicons.org/slack/000000" class="app-icon" alt="Slack">
+                    <img src="https://cdn.brandfetch.io/slack.com/w/100/h/100" class="app-icon" alt="Slack">
                 </div>
                 <div class="integration-info">
                     <h4>Team Alerts</h4>
@@ -447,9 +451,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://cdn.simpleicons.org/googlesheets/000000" class="app-icon" alt="Google Sheets">
+                    <img src="https://cdn.brandfetch.io/google.com/icon/theme/light/w/100/h/100" class="app-icon" alt="Google Sheets">
                 </div>
                 <div class="integration-info">
                     <h4>Reporting</h4>
@@ -459,9 +463,9 @@
 
             <div class="integration-item">
                 <div class="app-icons">
-                    <img src="https://cdn.simpleicons.org/shopify/000000" class="app-icon" alt="Shopify">
+                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
                     <div class="arrow">-></div>
-                    <img src="https://cdn.simpleicons.org/make/000000" class="app-icon" alt="Make.com">
+                    <img src="https://cdn.brandfetch.io/make.com/w/100/h/100" class="app-icon" alt="Make.com">
                 </div>
                 <div class="integration-info">
                     <h4>Custom Logic</h4>
@@ -483,7 +487,7 @@
         </div>
 
         <footer>
-            COPYRIGHT © 2026 ABHI PANDRATE
+            COPYRIGHT © 2024 ABHI PANDRATE
         </footer>
 
     </div>
