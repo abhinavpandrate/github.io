@@ -11,26 +11,18 @@
 </head>
 <body>
 
-    <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-    </div>
-
-    <div class="crt-overlay"></div>
-
     <div class="nav-bar">
         <a href="#home" class="nav-btn" id="nav-home" title="Home">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 3L2 12H5V20H10V14H14V20H19V12H22L12 3Z"/>
             </svg>
         </a>
-        <a href="#shopify" class="nav-btn" id="nav-shopify" title="Shopify Work"><img src="https://cdn.simpleicons.org/shopify/ffffff" class="nav-icon" alt="Shopify"></a>
-        <a href="#automation" class="nav-btn" id="nav-automation" title="Automation"><img src="https://cdn.simpleicons.org/make/ffffff" class="nav-icon" alt="Automation"></a>
-        <a href="#contact" class="nav-btn" id="nav-contact" title="Contact"><img src="https://cdn.simpleicons.org/gmail/ffffff" class="nav-icon" alt="Contact"></a>
+        <a href="#shopify" class="nav-btn" id="nav-shopify" title="Shopify Work"><img src="https://cdn.simpleicons.org/shopify/ffffff" alt="Shopify" style="width:16px;"></a>
+        <a href="#automation" class="nav-btn" id="nav-automation" title="Automation"><img src="https://cdn.simpleicons.org/make/ffffff" alt="Automation" style="width:16px;"></a>
+        <a href="#contact" class="nav-btn" id="nav-contact" title="Contact"><img src="https://cdn.simpleicons.org/gmail/ffffff" alt="Contact" style="width:16px;"></a>
     </div>
 
-    <button id="theme-toggle" class="theme-btn" title="Toggle Hacker Mode">
-        <span class="theme-icon">⚡</span> SYSTEM
-    </button>
+    <button id="scrollToTop" class="scroll-top-btn" onclick="window.scrollTo(0,0)">↑</button>
 
     <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -44,7 +36,7 @@
 
     <div class="container">
         
-        <div id="home" class="section-trigger">
+        <div id="home">
             <div class="status-badge">
                 <div class="status-dot"></div>
                 AVAILABLE FOR WORK
@@ -53,11 +45,11 @@
             <br>
 
             <div style="margin-bottom: 20px;">
-                <span class="retro-label">HI THERE.</span>
+                <span style="font-family: 'Press Start 2P'; font-size: 12px; background: #2c2c2c; color: #f3d2b3; padding: 5px 10px;">HI THERE.</span>
             </div>
             
-            <div class="glitch-wrapper">
-                <h1 class="glitch" data-text="I'm Abhi Pandrate">I'm Abhi Pandrate</h1>
+            <div class="typewriter">
+                <h1>I'm Abhi Pandrate</h1>
             </div>
             
             <div class="tag-container">
@@ -68,7 +60,7 @@
 
         <div class="separator">----------------------------------------</div>
 
-        <p class="intro-text">
+        <p>
             I help e-commerce brands scale by connecting their store to their systems. I build high-performance Shopify themes and design invisible automation engines.
         </p>
 
@@ -103,13 +95,13 @@
 
         <div class="separator">----------------------------------------</div>
 
-        <h2 id="shopify" class="section-trigger">Featured Work</h2>
+        <h2 id="shopify">Featured Work</h2>
         <div class="separator">...........</div>
 
         <div class="project-card">
-            <div class="project-header">
+            <div>
                 <div class="project-title">Charlie Oven</div>
-                <span class="year-label">2025 - PRESENT</span>
+                <span class="year-label">2024 - PRESENT</span>
             </div>
             
             <div class="tag-container" style="justify-content: flex-start;">
@@ -118,9 +110,7 @@
                 <span class="tag">Liquid</span>
             </div>
 
-            <div class="image-wrapper">
-                <img src="charlie-oven.jpg" onerror="this.src='https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=800&h=450'" alt="Charlie Oven Website" class="project-image">
-            </div>
+            <img src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=800&h=450" alt="Charlie Oven Website" class="project-image">
 
             <p>
                 <strong>The Goal:</strong> Modernise the storefront and streamline operations.
@@ -136,7 +126,7 @@
 
         <div class="separator">----------------------------------------</div>
 
-        <h2 id="automation" class="section-trigger">Automation</h2>
+        <h2 id="automation">Automation</h2>
         <p style="margin-bottom: 40px;">
             Click any workflow below to see how it works.
         </p>
@@ -195,11 +185,11 @@
 
         <div class="separator">----------------------------------------</div>
 
-        <h2 id="contact" class="section-trigger">Contact</h2>
+        <h2 id="contact">Contact</h2>
         <p>Ready to build or automate?</p>
         
         <div class="tag-container">
-            <a href="mailto:abhinavpandrate@gmail.com" class="tag action-btn">Email Me</a>
+            <a href="mailto:abhinavpandrate@gmail.com" class="tag">Email Me</a>
             <button class="copy-email-btn" onclick="copyEmail()">[ Copy Address ]</button>
         </div>
         
@@ -211,7 +201,7 @@
         </div>
 
         <footer>
-            COPYRIGHT © 2026 ABHI PANDRATE
+            COPYRIGHT © 2024 ABHI PANDRATE
         </footer>
 
     </div>
