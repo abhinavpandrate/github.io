@@ -1,4 +1,4 @@
-// --- DATA FOR MODALS (UK LOCALISED) ---
+// --- DATA FOR MODALS ---
 const workflowData = {
     finance: {
         title: "Finance & Accounting Sync",
@@ -47,8 +47,6 @@ function openModal(type) {
     if(!data) return;
 
     const modalBody = document.getElementById('modal-body-content');
-    
-    // Build HTML
     let stepsHtml = data.steps.map(step => `<div class="workflow-step">${step}</div>`).join('');
     
     modalBody.innerHTML = `
@@ -75,34 +73,36 @@ function closeModal() {
 function copyEmail() {
     navigator.clipboard.writeText("abhinavpandrate@gmail.com");
     const btn = document.querySelector('.copy-email-btn');
-    const originalText = btn.innerText;
     btn.innerText = "[ COPIED! ]";
-    btn.style.background = "#25d366"; // Green flash
-    btn.style.color = "#000";
-    
-    setTimeout(() => {
-        btn.innerText = "[ Copy Address ]";
-        btn.style.background = "#2c2c2c";
-        btn.style.color = "#f3d2b3";
-    }, 2000);
+    setTimeout(() => btn.innerText = "[ Copy Address ]", 2000);
 }
 
-// --- SCROLL SPY FOR NAVIGATION ---
+// --- SCROLL LOGIC (New Feature) ---
+const scrollTopBtn = document.getElementById("scrollToTop");
+const navLinks = {
+    home: document.getElementById('nav-home'),
+    shopify: document.getElementById('nav-shopify'),
+    automation: document.getElementById('nav-automation'),
+    contact: document.getElementById('nav-contact')
+};
+
 window.addEventListener('scroll', () => {
-    const sections = ['home', 'shopify', 'automation', 'contact'];
-    const navLinks = {
-        home: document.getElementById('nav-home'),
-        shopify: document.getElementById('nav-shopify'),
-        automation: document.getElementById('nav-automation'),
-        contact: document.getElementById('nav-contact')
-    };
+    // 1. Show/Hide Scroll to Top Button
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        scrollTopBtn.classList.add("visible");
+    } else {
+        scrollTopBtn.classList.remove("visible");
+    }
 
+    // 2. Highlight Active Section in Nav
     let current = '';
-
+    const sections = ['home', 'shopify', 'automation', 'contact'];
+    
     sections.forEach(section => {
         const element = document.getElementById(section);
         if (element) {
             const sectionTop = element.offsetTop;
+            // -300 is an offset so it highlights BEFORE you reach the exact top
             if (scrollY >= (sectionTop - 300)) {
                 current = section;
             }
