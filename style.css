@@ -1,25 +1,9 @@
-/* --- CSS VARIABLES (Default Beige Theme) --- */
 :root {
     --bg-color: #f3d2b3; 
     --text-color: #2c2c2c; 
     --accent-color: #d15858;
-    --code-bg: rgba(44, 44, 44, 0.03);
-    --modal-overlay: rgba(44, 44, 44, 0.9);
-    --crt-opacity: 0.1;
-    --btn-bg: #4a4a4a;
-    --btn-text: #ffffff;
-}
-
-/* --- HACKER MODE (Green Theme) --- */
-body.hacker-mode {
-    --bg-color: #0a0a0a;
-    --text-color: #00ff41;
-    --accent-color: #008f11;
-    --code-bg: rgba(0, 255, 65, 0.05);
-    --modal-overlay: rgba(0, 0, 0, 0.95);
-    --crt-opacity: 0.3; /* Stronger scanlines */
-    --btn-bg: #003300;
-    --btn-text: #00ff41;
+    --code-bg: rgba(44, 44, 44, 0.05);
+    --modal-overlay: rgba(44, 44, 44, 0.85);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,44 +17,9 @@ body {
     font-size: 22px;
     line-height: 1.6;
     overflow-x: hidden;
-    transition: background-color 0.5s, color 0.5s; /* Smooth transition */
 }
 
-/* --- SCROLL PROGRESS BAR --- */
-.progress-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    z-index: 2000;
-}
-
-.progress-bar {
-    height: 100%;
-    background: var(--text-color);
-    width: 0%;
-    transition: width 0.1s;
-}
-
-/* --- CRT SCANLINE EFFECT --- */
-.crt-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(
-        rgba(18, 16, 16, 0) 50%, 
-        rgba(0, 0, 0, 0.25) 50%
-    );
-    background-size: 100% 4px;
-    pointer-events: none;
-    z-index: 999;
-    opacity: var(--crt-opacity);
-}
-
-/* --- 3D CANVAS --- */
+/* --- 3D CANVAS BLOCK --- */
 #canvas-container {
     position: relative; 
     width: 100%;
@@ -98,48 +47,22 @@ h1, h2, h3 {
     margin-bottom: 25px;
 }
 
-/* GLITCH EFFECT */
-.glitch-wrapper { display: inline-block; }
+.typewriter { display: inline-block; }
 
-.glitch {
-    font-size: 36px;
-    position: relative;
-    color: var(--text-color);
+.typewriter h1 {
+    overflow: hidden; 
+    border-right: .15em solid orange; 
+    white-space: nowrap; 
+    margin: 0 auto; 
+    letter-spacing: -2px; 
+    animation: 
+        typing 3.5s steps(30, end),
+        blink-caret .75s step-end infinite;
+    font-size: 28px;
 }
 
-.glitch::before, .glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-color);
-}
-
-.glitch::before {
-    left: 2px;
-    text-shadow: -1px 0 #ff00c1;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim 5s infinite linear alternate-reverse;
-}
-
-.glitch::after {
-    left: -2px;
-    text-shadow: -1px 0 #00fff9;
-    clip: rect(44px, 450px, 56px, 0);
-    animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-    0% { clip: rect(2px, 9999px, 86px, 0); }
-    100% { clip: rect(65px, 9999px, 19px, 0); }
-}
-
-@keyframes glitch-anim2 {
-    0% { clip: rect(12px, 9999px, 6px, 0); }
-    100% { clip: rect(89px, 9999px, 13px, 0); }
-}
+@keyframes typing { from { width: 0 } to { width: 100% } }
+@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--text-color); } }
 
 h2 { 
     font-size: 18px; 
@@ -147,11 +70,15 @@ h2 {
     color: var(--bg-color); 
     display: inline-block; 
     padding: 10px 15px; 
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.15);
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
 }
 
-p { margin-bottom: 25px; max-width: 650px; margin-left: auto; margin-right: auto; }
-.intro-text { font-size: 24px; line-height: 1.8; }
+p {
+    margin-bottom: 25px;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 /* --- STATUS INDICATOR --- */
 .status-badge {
@@ -160,19 +87,26 @@ p { margin-bottom: 25px; max-width: 650px; margin-left: auto; margin-right: auto
     gap: 8px;
     font-family: 'Press Start 2P';
     font-size: 10px;
-    background: rgba(255,255,255,0.4);
-    padding: 6px 12px;
-    border-radius: 4px;
+    background: rgba(255,255,255,0.3);
+    padding: 5px 10px;
+    border-radius: 20px;
     margin-bottom: 15px;
-    border: 2px solid var(--text-color);
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+    border: 1px solid var(--text-color);
 }
 
 .status-dot {
-    width: 10px;
-    height: 10px;
-    background: #25d366;
-    border: 2px solid #000;
+    width: 8px;
+    height: 8px;
+    background: #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #00ff00;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
 }
 
 /* --- NAVIGATION --- */
@@ -180,75 +114,66 @@ p { margin-bottom: 25px; max-width: 650px; margin-left: auto; margin-right: auto
     position: fixed;
     top: 25px;
     left: 25px;
-    z-index: 1000;
+    z-index: 100;
     display: flex;
     gap: 12px;
 }
 
 .nav-btn {
-    background: var(--btn-bg);
-    color: var(--btn-text);
-    width: 48px;
-    height: 48px;
+    background: #4a4a4a;
+    color: white;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-    transition: all 0.1s;
-    border: 2px solid var(--text-color);
+    transition: transform 0.1s, background 0.2s;
 }
 
-.nav-btn svg, .nav-icon { width: 16px; height: 16px; }
-
+/* Active State for Navigation */
 .nav-btn:hover, .nav-btn.active { 
-    background: var(--text-color);
-    color: var(--bg-color);
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
+    background: #2c2c2c; 
+    transform: translate(-1px, -1px);
 }
 
-/* Fix icon colors on hover/active */
-.nav-btn:hover svg { fill: var(--bg-color); }
-/* Invert generic icons in hacker mode */
-body.hacker-mode .nav-icon { filter: sepia(100%) hue-rotate(90deg) saturate(500%); }
-
-/* --- THEME TOGGLE BTN --- */
-.theme-btn {
+/* --- SCROLL TO TOP BTN --- */
+.scroll-top-btn {
     position: fixed;
-    bottom: 25px;
-    left: 25px;
-    z-index: 1000;
-    background: var(--btn-bg);
-    color: var(--btn-text);
-    border: 2px solid var(--text-color);
+    bottom: 30px;
+    right: 30px;
+    background: #2c2c2c;
+    color: #f3d2b3;
+    width: 50px;
+    height: 50px;
+    border: none;
     font-family: 'Press Start 2P';
-    font-size: 10px;
-    padding: 10px 15px;
+    font-size: 20px;
     cursor: pointer;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    box-shadow: 6px 6px 0px rgba(0,0,0,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 99;
 }
 
-.theme-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px rgba(0,0,0,0.2); }
+.scroll-top-btn.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.scroll-top-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
 
 /* --- UI ELEMENTS --- */
-.retro-label {
-    font-family: 'Press Start 2P'; 
-    font-size: 12px; 
-    background: var(--text-color); 
-    color: var(--bg-color); 
-    padding: 8px 12px;
-}
-
 .separator {
-    margin: 50px 0;
+    margin: 40px 0;
     letter-spacing: 3px;
-    opacity: 0.3;
+    opacity: 0.4;
     font-family: monospace;
-    font-weight: bold;
 }
 
 .tag-container {
@@ -256,25 +181,23 @@ body.hacker-mode .nav-icon { filter: sepia(100%) hue-rotate(90deg) saturate(500%
     justify-content: center;
     flex-wrap: wrap;
     gap: 15px;
-    margin: 30px 0;
+    margin: 25px 0;
 }
 
 .tag {
     border: 2px dotted var(--text-color);
-    padding: 8px 12px;
+    padding: 6px 10px;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
     text-transform: uppercase;
     color: var(--text-color);
-    text-decoration: none;
-    transition: all 0.2s;
 }
 
-.tag:hover { background: var(--text-color); color: var(--bg-color); cursor: pointer; }
-
-.tag.filled { background: var(--text-color); color: var(--bg-color); border: 2px solid var(--text-color); }
-
-.tag.action-btn { background: var(--accent-color); color: #fff; border: 2px solid var(--text-color); box-shadow: 4px 4px 0 rgba(0,0,0,0.2); }
+.tag.filled {
+    background: var(--text-color);
+    color: var(--bg-color);
+    border: 2px solid var(--text-color);
+}
 
 /* --- SKILLS GRID --- */
 .skill-split {
@@ -287,10 +210,9 @@ body.hacker-mode .nav-icon { filter: sepia(100%) hue-rotate(90deg) saturate(500%
 
 .skill-col {
     background: var(--code-bg);
-    padding: 25px;
+    padding: 20px;
     border: 2px solid var(--text-color);
     position: relative;
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.05);
 }
 
 .skill-col h3 {
@@ -301,39 +223,37 @@ body.hacker-mode .nav-icon { filter: sepia(100%) hue-rotate(90deg) saturate(500%
 }
 
 .skill-list { list-style: none; font-size: 18px; }
-.skill-list li { margin-bottom: 8px; }
-.skill-list li::before { content: "> "; color: var(--accent-color); font-weight: bold; margin-right: 5px; }
+.skill-list li::before { content: "> "; color: var(--accent-color); font-weight: bold; }
 
 /* --- INTEGRATION GRID --- */
 .integration-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
     text-align: left;
 }
 
 .integration-item {
     background: rgba(255,255,255,0.4);
     border: 2px solid var(--text-color);
-    padding: 20px;
+    padding: 15px;
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: transform 0.1s;
+    transition: transform 0.2s, background 0.2s;
     cursor: pointer;
+}
+
+.integration-item:hover {
+    transform: translateY(-2px);
+    background: #fff;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
 }
 
-.integration-item:hover { transform: translate(-2px, -2px); background: #fff; box-shadow: 6px 6px 0px rgba(0,0,0,0.15); }
-
-/* Ensure apps look good in hacker mode */
-body.hacker-mode .integration-item { background: rgba(0,50,0,0.8); }
-body.hacker-mode .integration-item:hover { background: #003300; }
-
 .app-icons { display: flex; align-items: center; gap: 10px; min-width: 100px; }
-.app-icon { width: 40px; height: 40px; background: #fff; border-radius: 4px; padding: 4px; object-fit: contain; border: 2px solid var(--text-color); }
+.app-icon { width: 36px; height: 36px; background: #fff; border-radius: 6px; padding: 4px; object-fit: contain; border: 1px solid #333; }
 .arrow { font-family: 'Press Start 2P'; font-size: 10px; color: var(--accent-color); }
-.integration-info h4 { font-family: 'Press Start 2P'; font-size: 12px; margin-bottom: 5px; line-height: 1.4; }
+.integration-info h4 { font-family: 'Press Start 2P'; font-size: 12px; margin-bottom: 5px; }
 .integration-info span { font-size: 16px; opacity: 0.8; display: block; line-height: 1.3; }
 
 /* --- MODAL STYLES --- */
@@ -344,24 +264,24 @@ body.hacker-mode .integration-item:hover { background: #003300; }
     width: 100%;
     height: 100%;
     background: var(--modal-overlay);
-    z-index: 2000;
+    z-index: 1000;
     display: none;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(5px);
 }
 
 .modal-overlay.active { display: flex; }
 
 .modal-content {
-    background: var(--bg-color);
-    color: var(--text-color);
+    background: #f3d2b3;
+    color: #2c2c2c;
     width: 90%;
     max-width: 600px;
-    border: 4px solid var(--text-color);
+    border: 4px solid #2c2c2c;
     padding: 30px;
     position: relative;
-    box-shadow: 15px 15px 0px rgba(0,0,0,0.5);
+    box-shadow: 10px 10px 0px #000;
     text-align: left;
 }
 
@@ -369,11 +289,11 @@ body.hacker-mode .integration-item:hover { background: #003300; }
     position: absolute;
     top: 15px;
     right: 15px;
-    background: var(--accent-color);
+    background: #d15858;
     color: white;
-    border: 2px solid var(--text-color);
-    width: 32px;
-    height: 32px;
+    border: 2px solid #2c2c2c;
+    width: 30px;
+    height: 30px;
     font-family: 'Press Start 2P';
     cursor: pointer;
     display: flex;
@@ -381,45 +301,40 @@ body.hacker-mode .integration-item:hover { background: #003300; }
     justify-content: center;
 }
 
-.modal-header { border-bottom: 2px dotted var(--text-color); margin-bottom: 20px; padding-bottom: 10px; }
+.modal-header { border-bottom: 2px dotted #2c2c2c; margin-bottom: 20px; padding-bottom: 10px; }
 .modal-body p { margin-bottom: 15px; }
-.workflow-step { background: rgba(255,255,255,0.5); padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--text-color); font-size: 16px; font-family: 'VT323', monospace; }
-body.hacker-mode .workflow-step { background: rgba(0,50,0,0.5); }
+.workflow-step { background: rgba(255,255,255,0.5); padding: 10px; margin-bottom: 10px; border-left: 3px solid #2c2c2c; font-size: 16px; }
 
 /* --- PROJECT CARD --- */
 .project-card {
     margin-bottom: 60px;
     text-align: left;
-    border: 2px solid var(--text-color);
-    padding: 25px;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 8px 8px 0px rgba(0,0,0,0.1);
+    border-left: 4px solid var(--text-color);
+    padding-left: 20px;
+    background: rgba(255,255,255,0.1);
 }
-body.hacker-mode .project-card { background: rgba(0,50,0,0.8); }
-
-.project-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
 
 .project-image {
     width: 100%;
     height: auto;
     border: 2px solid var(--text-color);
     margin: 20px 0;
-    filter: grayscale(100%) contrast(1.1); 
+    box-shadow: 6px 6px 0px rgba(0,0,0,0.1);
+    filter: grayscale(100%); 
     transition: filter 0.3s;
 }
 
-.project-image:hover { filter: grayscale(0%) contrast(1); }
+.project-image:hover { filter: grayscale(0%); }
 
-.project-title { background: var(--text-color); color: var(--bg-color); padding: 10px 15px; display: inline-block; font-family: 'Press Start 2P'; font-size: 14px; }
-.project-links a { display: inline-block; margin-right: 20px; text-decoration: none; color: var(--text-color); border-bottom: 2px solid var(--text-color); font-weight: bold; transition: background 0.2s; }
-.project-links a:hover { background: var(--text-color); color: var(--bg-color); }
+.project-title { background: var(--text-color); color: var(--bg-color); padding: 8px 12px; display: inline-block; font-family: 'Press Start 2P'; font-size: 14px; margin-bottom: 10px; }
+.project-links a { display: inline-block; margin-right: 20px; text-decoration: none; color: var(--text-color); border-bottom: 2px solid var(--text-color); font-weight: bold; }
 
 /* --- FOOTER & COPY BUTTON --- */
 footer { margin-top: 100px; padding-bottom: 40px; font-family: 'Press Start 2P'; font-size: 10px; opacity: 0.6; text-align: center; }
 
 .copy-email-btn {
-    background: var(--text-color);
-    color: var(--bg-color);
+    background: #2c2c2c;
+    color: #f3d2b3;
     border: none;
     font-family: 'Press Start 2P';
     font-size: 10px;
@@ -428,9 +343,11 @@ footer { margin-top: 100px; padding-bottom: 40px; font-family: 'Press Start 2P';
     margin-left: 10px;
 }
 
+.copy-email-btn:active { transform: translateY(2px); }
+
 @media (max-width: 700px) {
     .skill-split { grid-template-columns: 1fr; }
     .integration-grid { grid-template-columns: 1fr; }
-    .glitch { font-size: 24px; }
+    .typewriter h1 { font-size: 18px; white-space: normal; animation: none; border: none; }
     #canvas-container { height: 35vh; }
 }
