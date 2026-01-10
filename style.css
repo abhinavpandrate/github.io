@@ -129,14 +129,12 @@ p {
     justify-content: center;
     text-decoration: none;
     box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-    transition: transform 0.1s, background 0.2s;
+    transition: transform 0.1s;
 }
 
-/* Active State for Navigation */
-.nav-btn:hover, .nav-btn.active { 
-    background: #2c2c2c; 
-    transform: translate(-1px, -1px);
-}
+.nav-icon { width: 16px; height: 16px; }
+
+.nav-btn:hover, .nav-btn.active { background: #2c2c2c; transform: translate(-1px, -1px); }
 
 /* --- SCROLL TO TOP BTN --- */
 .scroll-top-btn {
@@ -158,17 +156,18 @@ p {
     z-index: 99;
 }
 
-.scroll-top-btn.visible {
-    opacity: 1;
-    pointer-events: all;
-}
-
-.scroll-top-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-}
+.scroll-top-btn.visible { opacity: 1; pointer-events: all; }
+.scroll-top-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
 
 /* --- UI ELEMENTS --- */
+.retro-label {
+    font-family: 'Press Start 2P'; 
+    font-size: 12px; 
+    background: #2c2c2c; 
+    color: #f3d2b3; 
+    padding: 8px 12px;
+}
+
 .separator {
     margin: 40px 0;
     letter-spacing: 3px;
@@ -191,15 +190,17 @@ p {
     font-size: 10px;
     text-transform: uppercase;
     color: var(--text-color);
+    text-decoration: none;
 }
 
-.tag.filled {
-    background: var(--text-color);
-    color: var(--bg-color);
-    border: 2px solid var(--text-color);
-}
+.tag.filled { background: var(--text-color); color: var(--bg-color); border: 2px solid var(--text-color); }
 
-/* --- SKILLS GRID --- */
+.tag.action-btn { background: var(--accent-color); color: #fff; border: 2px solid #2c2c2c; }
+
+.tag.cv-btn { background: #4a4a4a; color: #fff; display: inline-flex; align-items: center; border: 2px solid #222; }
+.tag.cv-btn:hover { background: #2c2c2c; box-shadow: 4px 4px 0 rgba(0,0,0,0.3); transform: translateY(-2px); }
+
+/* --- SKILLS GRID & TOOLTIPS --- */
 .skill-split {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -223,7 +224,26 @@ p {
 }
 
 .skill-list { list-style: none; font-size: 18px; }
+.skill-list li { margin-bottom: 8px; position: relative; cursor: help; }
 .skill-list li::before { content: "> "; color: var(--accent-color); font-weight: bold; }
+
+/* Custom Retro Tooltip */
+.skill-list li:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2c2c2c;
+    color: #f3d2b3;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-family: 'VT323';
+    white-space: nowrap;
+    border: 1px solid #f3d2b3;
+    z-index: 10;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+}
 
 /* --- INTEGRATION GRID --- */
 .integration-grid {
@@ -255,6 +275,57 @@ p {
 .arrow { font-family: 'Press Start 2P'; font-size: 10px; color: var(--accent-color); }
 .integration-info h4 { font-family: 'Press Start 2P'; font-size: 12px; margin-bottom: 5px; }
 .integration-info span { font-size: 16px; opacity: 0.8; display: block; line-height: 1.3; }
+
+/* --- INTERACTIVE SIMULATOR STYLES --- */
+.demo-container {
+    background: rgba(255,255,255,0.5);
+    border: 2px dashed var(--text-color);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.demo-label { font-size: 12px; font-weight: bold; margin-bottom: 8px; display: block; font-family: monospace; }
+
+.demo-input {
+    width: 100%;
+    background: #fff;
+    border: 2px solid var(--text-color);
+    padding: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.demo-btn {
+    background: var(--text-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 10px 16px;
+    font-family: 'Press Start 2P';
+    font-size: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.demo-btn:hover { background: var(--accent-color); color: #fff; }
+
+.demo-result { margin-top: 20px; display: none; animation: slideDown 0.3s ease-out; }
+
+/* Simulator Card Styles */
+.xero-card { background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 4px; font-family: sans-serif; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.shipping-label { background: #fff; border-radius: 6px; overflow: hidden; font-family: sans-serif; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.notion-card { background: #fff; border: 1px solid #e0e0e0; padding: 12px; border-radius: 3px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #37352f; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.notion-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 12px; font-weight: 500; margin-right: 5px; }
+.tag-red { background: #ffe2dd; color: #d44c47; }
+.tag-blue { background: #e3e2e0; color: #37352f; }
+.slack-msg { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 6px; font-family: 'Lato', sans-serif; color: #1d1c1d; }
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 /* --- MODAL STYLES --- */
 .modal-overlay {
@@ -332,6 +403,8 @@ p {
 /* --- FOOTER & COPY BUTTON --- */
 footer { margin-top: 100px; padding-bottom: 40px; font-family: 'Press Start 2P'; font-size: 10px; opacity: 0.6; text-align: center; }
 
+.system-status { font-family: 'Press Start 2P', monospace; font-size: 10px; opacity: 0.5; margin-top: 10px; letter-spacing: 1px; }
+
 .copy-email-btn {
     background: #2c2c2c;
     color: #f3d2b3;
@@ -350,4 +423,17 @@ footer { margin-top: 100px; padding-bottom: 40px; font-family: 'Press Start 2P';
     .integration-grid { grid-template-columns: 1fr; }
     .typewriter h1 { font-size: 18px; white-space: normal; animation: none; border: none; }
     #canvas-container { height: 35vh; }
+}
+
+/* --- PRINT STYLES --- */
+@media print {
+    body { background: #fff; color: #000; }
+    .nav-bar, #canvas-container, .scroll-top-btn, .copy-email-btn, .status-badge { display: none !important; }
+    .container { max-width: 100%; padding: 0; text-align: left; }
+    .project-card, .integration-grid { break-inside: avoid; border: 1px solid #ccc; box-shadow: none; background: #fff; }
+    h1, h2 { color: #000; border-bottom: 1px solid #000; }
+    a { text-decoration: none; color: #000; }
+    .typewriter h1 { border: none; animation: none; font-size: 24pt; }
+    .tag { border: 1px solid #000; }
+    .skill-list li:hover::after { display: none; } /* Hide tooltips on print */
 }
