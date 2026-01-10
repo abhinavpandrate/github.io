@@ -1,439 +1,269 @@
-:root {
-    --bg-color: #f3d2b3; 
-    --text-color: #2c2c2c; 
-    --accent-color: #d15858;
-    --code-bg: rgba(44, 44, 44, 0.05);
-    --modal-overlay: rgba(44, 44, 44, 0.85);
+// --- DATA FOR INTERACTIVE SIMULATORS ---
+const workflowData = {
+    finance: {
+        type: "interactive",
+        title: "Finance & Accounting Sync",
+        desc: "See how Shopify orders instantly become valid tax invoices in Xero.",
+        inputLabel: "INPUT: New Order Total (£)",
+        placeholder: "150.00",
+        btnText: "[ GENERATE INVOICE ]",
+        template: (input) => `
+            <div class="xero-card">
+                <div style="border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:10px; display:flex; justify-content:space-between;">
+                    <span style="color:#00b7ff; font-weight:bold;">Xero Invoice #INV-2024</span>
+                    <span style="color:#0ba934;">PAID</span>
+                </div>
+                <div style="font-size:12px; color:#555;">
+                    <div><strong>To:</strong> Customer via Shopify</div>
+                    <div><strong>Date:</strong> ${new Date().toLocaleDateString('en-GB')}</div>
+                    <div style="margin-top:10px; font-size:16px; color:#000;">
+                        <strong>Total: £${input}</strong>
+                    </div>
+                    <div style="margin-top:5px; font-size:10px; color:#999;">VAT (20%): £${(input * 0.2).toFixed(2)} included</div>
+                </div>
+            </div>
+        `
+    },
+    fulfillment: {
+        type: "interactive",
+        title: "Smart Fulfillment Routing",
+        desc: "Simulate how orders are routed to specific warehouses based on country.",
+        inputLabel: "INPUT: Shipping Country",
+        placeholder: "France",
+        btnText: "[ ROUTE ORDER ]",
+        template: (input) => {
+            const isUK = input.toLowerCase() === 'uk' || input.toLowerCase() === 'united kingdom';
+            const warehouse = isUK ? "MANCHESTER HUB (UK)" : "BERLIN CENTRE (EU)";
+            const color = isUK ? "#2c2c2c" : "#0052cc";
+            return `
+            <div class="shipping-label" style="border: 2px solid ${color};">
+                <div style="background:${color}; color:#fff; padding:5px; font-weight:bold; font-size:12px;">
+                    SHIPSTATION LABEL CREATED
+                </div>
+                <div style="padding:10px; text-align:center;">
+                    <div style="font-size:24px; font-weight:bold; margin-bottom:5px;">${input.toUpperCase()}</div>
+                    <div style="font-size:10px; color:#666;">ROUTED TO:</div>
+                    <div style="font-weight:bold;">${warehouse}</div>
+                    <div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:5px; font-family:monospace;">
+                        ||| |||| || ||||| |||
+                    </div>
+                </div>
+            </div>`;
+        }
+    },
+    ops: {
+        type: "interactive",
+        title: "VIP & Return Tracking",
+        desc: "Type a customer note to see it tagged and logged in Notion.",
+        inputLabel: "INPUT: Customer Note",
+        placeholder: "Customer is asking for a refund...",
+        btnText: "[ SYNC TO NOTION ]",
+        template: (input) => `
+            <div class="notion-card">
+                <div style="font-weight:600; font-size:16px; margin-bottom:5px;">
+                    📄 Ticket #8492
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <span class="notion-tag tag-red">🔥 Urgent</span>
+                    <span class="notion-tag tag-blue">@Support</span>
+                </div>
+                <div style="color:#666; font-size:13px;">
+                    "${input}"
+                </div>
+            </div>
+        `
+    },
+    alerts: {
+        type: "interactive",
+        title: "High-Value Order Alerts",
+        desc: "Simulate a high-value order to trigger a team celebration in Slack.",
+        inputLabel: "INPUT: Order Value (£)",
+        placeholder: "2500",
+        btnText: "[ TEST ALERT ]",
+        template: (input) => `
+            <div class="slack-msg">
+                <div style="display:flex; gap:10px;">
+                    <div style="width:30px; height:30px; background:#000; border-radius:4px;"></div>
+                    <div>
+                        <div style="font-weight:bold; font-size:13px;">Shopify Bot <span style="font-weight:normal; color:#888; font-size:10px;">APP</span></div>
+                        <div style="font-size:14px; margin-top:2px;">
+                            🚨 <strong>BOOM! New High Value Order!</strong> 🚨
+                            <br>
+                            Value: <span style="background:#d1ffc4; padding:0 4px;">£${input}</span>
+                            <br>
+                            <i>Drinks are on us! 🍻</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    }
+};
+
+let currentModalType = null;
+
+// --- MODAL FUNCTIONS ---
+function openModal(type) {
+    const data = workflowData[type];
+    if(!data) return;
+    
+    currentModalType = type; // Store which one is open
+
+    const modalBody = document.getElementById('modal-body-content');
+    
+    modalBody.innerHTML = `
+        <div class="modal-header"><h3>${data.title}</h3></div>
+        <div class="modal-body">
+            <p>${data.desc}</p>
+            <div class="demo-container">
+                <label class="demo-label">${data.inputLabel}</label>
+                <input type="text" id="demoInput" class="demo-input" placeholder="${data.placeholder}">
+                <button class="demo-btn" onclick="runDemo()">${data.btnText}</button>
+                <div id="demoResult" class="demo-result"></div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('modal-overlay').classList.add('active');
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+function runDemo() {
+    const inputVal = document.getElementById('demoInput').value;
+    if(!inputVal) {
+        alert("Please enter a value to test the simulator!");
+        return;
+    }
 
-html { scroll-behavior: smooth; }
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'VT323', monospace;
-    font-size: 22px;
-    line-height: 1.6;
-    overflow-x: hidden;
+    const data = workflowData[currentModalType];
+    const resultBox = document.getElementById('demoResult');
+    
+    // Inject the specific HTML template for this workflow
+    resultBox.innerHTML = `
+        <label class="demo-label" style="margin-top:15px; color:#555;">OUTPUT SIMULATION:</label>
+        ${data.template(inputVal)}
+    `;
+    
+    resultBox.style.display = "block";
 }
 
-/* --- 3D CANVAS BLOCK --- */
-#canvas-container {
-    position: relative; 
-    width: 100%;
-    height: 45vh; 
-    overflow: hidden;
-    display: block;
-    margin-bottom: 20px;
+function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('active');
+    currentModalType = null;
 }
 
-/* --- LAYOUT --- */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2;
-    padding: 0 20px 100px 20px;
-    text-align: center;
+// --- COPY EMAIL FUNCTION ---
+function copyEmail() {
+    navigator.clipboard.writeText("abhinavpandrate@gmail.com");
+    const btn = document.querySelector('.copy-email-btn');
+    btn.innerText = "[ COPIED! ]";
+    setTimeout(() => btn.innerText = "[ Copy Address ]", 2000);
 }
 
-/* --- TYPOGRAPHY --- */
-h1, h2, h3 {
-    font-family: 'Press Start 2P', cursive;
-    text-transform: uppercase;
-    line-height: 1.5;
-    margin-bottom: 25px;
+// --- SCROLL TO TOP & NAV HIGHLIGHT ---
+const scrollTopBtn = document.getElementById("scrollToTop");
+const navLinks = {
+    home: document.getElementById('nav-home'),
+    shopify: document.getElementById('nav-shopify'),
+    automation: document.getElementById('nav-automation'),
+    contact: document.getElementById('nav-contact')
+};
+
+window.addEventListener('scroll', () => {
+    // 1. Scroll to Top Visibility
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        scrollTopBtn.classList.add("visible");
+    } else {
+        scrollTopBtn.classList.remove("visible");
+    }
+
+    // 2. Nav Highlight
+    let current = '';
+    const sections = ['home', 'shopify', 'automation', 'contact'];
+    sections.forEach(section => {
+        const element = document.getElementById(section);
+        if (element && scrollY >= (element.offsetTop - 300)) {
+            current = section;
+        }
+    });
+
+    Object.values(navLinks).forEach(link => link.classList.remove('active'));
+    if (navLinks[current]) navLinks[current].classList.add('active');
+});
+
+// --- LIVE UK TIME ---
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour12: false });
+    const timeEl = document.getElementById('uk-time');
+    if(timeEl) timeEl.innerText = timeString + " GMT";
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// --- KONAMI CODE ---
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let konamiIndex = 0;
+
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+            alert("★ SECRET UNLOCKED: GOD MODE ACTIVATED ★");
+            const spinInterval = setInterval(() => {
+                wireframe.rotation.x += 0.1;
+                wireframe.rotation.y += 0.1;
+                wireframe.scale.x = Math.sin(Date.now() / 100) * 2;
+            }, 16);
+            document.body.style.filter = "invert(1) hue-rotate(180deg)";
+            setTimeout(() => {
+                clearInterval(spinInterval);
+                document.body.style.filter = "";
+                wireframe.scale.set(1, 1, 1);
+                alert("System Restored.");
+            }, 5000);
+            konamiIndex = 0;
+        }
+    } else {
+        konamiIndex = 0;
+    }
+});
+
+// --- THREE.JS SETUP ---
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.45), 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+renderer.setSize(window.innerWidth, window.innerHeight * 0.45);
+document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+const geometry = new THREE.IcosahedronGeometry(2.3, 0);
+const edges = new THREE.EdgesGeometry(geometry);
+const material = new THREE.LineBasicMaterial({ color: 0x2c2c2c, linewidth: 2 });
+const wireframe = new THREE.LineSegments(edges, material);
+scene.add(wireframe);
+
+camera.position.z = 5;
+
+let mouseX = 0;
+let mouseY = 0;
+
+document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+    wireframe.rotation.x += 0.003 + (mouseY * 0.005);
+    wireframe.rotation.y += 0.003 + (mouseX * 0.005);
+    renderer.render(scene, camera);
 }
 
-.typewriter { display: inline-block; }
+animate();
 
-.typewriter h1 {
-    overflow: hidden; 
-    border-right: .15em solid orange; 
-    white-space: nowrap; 
-    margin: 0 auto; 
-    letter-spacing: -2px; 
-    animation: 
-        typing 3.5s steps(30, end),
-        blink-caret .75s step-end infinite;
-    font-size: 28px;
-}
-
-@keyframes typing { from { width: 0 } to { width: 100% } }
-@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--text-color); } }
-
-h2 { 
-    font-size: 18px; 
-    background: var(--text-color); 
-    color: var(--bg-color); 
-    display: inline-block; 
-    padding: 10px 15px; 
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
-}
-
-p {
-    margin-bottom: 25px;
-    max-width: 650px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* --- STATUS INDICATOR --- */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Press Start 2P';
-    font-size: 10px;
-    background: rgba(255,255,255,0.3);
-    padding: 5px 10px;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    border: 1px solid var(--text-color);
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    background: #00ff00;
-    border-radius: 50%;
-    box-shadow: 0 0 5px #00ff00;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.4; }
-    100% { opacity: 1; }
-}
-
-/* --- NAVIGATION --- */
-.nav-bar {
-    position: fixed;
-    top: 25px;
-    left: 25px;
-    z-index: 100;
-    display: flex;
-    gap: 12px;
-}
-
-.nav-btn {
-    background: #4a4a4a;
-    color: white;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
-    transition: transform 0.1s;
-}
-
-.nav-icon { width: 16px; height: 16px; }
-
-.nav-btn:hover, .nav-btn.active { background: #2c2c2c; transform: translate(-1px, -1px); }
-
-/* --- SCROLL TO TOP BTN --- */
-.scroll-top-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: #2c2c2c;
-    color: #f3d2b3;
-    width: 50px;
-    height: 50px;
-    border: none;
-    font-family: 'Press Start 2P';
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.1);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 99;
-}
-
-.scroll-top-btn.visible { opacity: 1; pointer-events: all; }
-.scroll-top-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
-
-/* --- UI ELEMENTS --- */
-.retro-label {
-    font-family: 'Press Start 2P'; 
-    font-size: 12px; 
-    background: #2c2c2c; 
-    color: #f3d2b3; 
-    padding: 8px 12px;
-}
-
-.separator {
-    margin: 40px 0;
-    letter-spacing: 3px;
-    opacity: 0.4;
-    font-family: monospace;
-}
-
-.tag-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin: 25px 0;
-}
-
-.tag {
-    border: 2px dotted var(--text-color);
-    padding: 6px 10px;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 10px;
-    text-transform: uppercase;
-    color: var(--text-color);
-    text-decoration: none;
-}
-
-.tag.filled { background: var(--text-color); color: var(--bg-color); border: 2px solid var(--text-color); }
-
-.tag.action-btn { background: var(--accent-color); color: #fff; border: 2px solid #2c2c2c; }
-
-.tag.cv-btn { background: #4a4a4a; color: #fff; display: inline-flex; align-items: center; border: 2px solid #222; }
-.tag.cv-btn:hover { background: #2c2c2c; box-shadow: 4px 4px 0 rgba(0,0,0,0.3); transform: translateY(-2px); }
-
-/* --- SKILLS GRID & TOOLTIPS --- */
-.skill-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    text-align: left;
-    margin-bottom: 60px;
-}
-
-.skill-col {
-    background: var(--code-bg);
-    padding: 20px;
-    border: 2px solid var(--text-color);
-    position: relative;
-}
-
-.skill-col h3 {
-    font-size: 16px;
-    border-bottom: 2px dotted var(--text-color);
-    display: inline-block;
-    margin-bottom: 15px;
-}
-
-.skill-list { list-style: none; font-size: 18px; }
-.skill-list li { margin-bottom: 8px; position: relative; cursor: help; }
-.skill-list li::before { content: "> "; color: var(--accent-color); font-weight: bold; }
-
-/* Custom Retro Tooltip */
-.skill-list li:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #2c2c2c;
-    color: #f3d2b3;
-    padding: 5px 10px;
-    font-size: 14px;
-    font-family: 'VT323';
-    white-space: nowrap;
-    border: 1px solid #f3d2b3;
-    z-index: 10;
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
-}
-
-/* --- INTEGRATION GRID --- */
-.integration-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    text-align: left;
-}
-
-.integration-item {
-    background: rgba(255,255,255,0.4);
-    border: 2px solid var(--text-color);
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: transform 0.2s, background 0.2s;
-    cursor: pointer;
-}
-
-.integration-item:hover {
-    transform: translateY(-2px);
-    background: #fff;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
-}
-
-.app-icons { display: flex; align-items: center; gap: 10px; min-width: 100px; }
-.app-icon { width: 36px; height: 36px; background: #fff; border-radius: 6px; padding: 4px; object-fit: contain; border: 1px solid #333; }
-.arrow { font-family: 'Press Start 2P'; font-size: 10px; color: var(--accent-color); }
-.integration-info h4 { font-family: 'Press Start 2P'; font-size: 12px; margin-bottom: 5px; }
-.integration-info span { font-size: 16px; opacity: 0.8; display: block; line-height: 1.3; }
-
-/* --- INTERACTIVE SIMULATOR STYLES --- */
-.demo-container {
-    background: rgba(255,255,255,0.5);
-    border: 2px dashed var(--text-color);
-    padding: 20px;
-    margin-top: 20px;
-}
-
-.demo-label { font-size: 12px; font-weight: bold; margin-bottom: 8px; display: block; font-family: monospace; }
-
-.demo-input {
-    width: 100%;
-    background: #fff;
-    border: 2px solid var(--text-color);
-    padding: 10px;
-    font-family: 'VT323', monospace;
-    font-size: 18px;
-    color: #000;
-    margin-bottom: 10px;
-}
-
-.demo-btn {
-    background: var(--text-color);
-    color: var(--bg-color);
-    border: none;
-    padding: 10px 16px;
-    font-family: 'Press Start 2P';
-    font-size: 10px;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.2s;
-}
-
-.demo-btn:hover { background: var(--accent-color); color: #fff; }
-
-.demo-result { margin-top: 20px; display: none; animation: slideDown 0.3s ease-out; }
-
-/* Simulator Card Styles */
-.xero-card { background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 4px; font-family: sans-serif; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-.shipping-label { background: #fff; border-radius: 6px; overflow: hidden; font-family: sans-serif; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-.notion-card { background: #fff; border: 1px solid #e0e0e0; padding: 12px; border-radius: 3px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #37352f; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.notion-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 12px; font-weight: 500; margin-right: 5px; }
-.tag-red { background: #ffe2dd; color: #d44c47; }
-.tag-blue { background: #e3e2e0; color: #37352f; }
-.slack-msg { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 6px; font-family: 'Lato', sans-serif; color: #1d1c1d; }
-
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- MODAL STYLES --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--modal-overlay);
-    z-index: 1000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-}
-
-.modal-overlay.active { display: flex; }
-
-.modal-content {
-    background: #f3d2b3;
-    color: #2c2c2c;
-    width: 90%;
-    max-width: 600px;
-    border: 4px solid #2c2c2c;
-    padding: 30px;
-    position: relative;
-    box-shadow: 10px 10px 0px #000;
-    text-align: left;
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #d15858;
-    color: white;
-    border: 2px solid #2c2c2c;
-    width: 30px;
-    height: 30px;
-    font-family: 'Press Start 2P';
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-header { border-bottom: 2px dotted #2c2c2c; margin-bottom: 20px; padding-bottom: 10px; }
-.modal-body p { margin-bottom: 15px; }
-.workflow-step { background: rgba(255,255,255,0.5); padding: 10px; margin-bottom: 10px; border-left: 3px solid #2c2c2c; font-size: 16px; }
-
-/* --- PROJECT CARD --- */
-.project-card {
-    margin-bottom: 60px;
-    text-align: left;
-    border-left: 4px solid var(--text-color);
-    padding-left: 20px;
-    background: rgba(255,255,255,0.1);
-}
-
-.project-image {
-    width: 100%;
-    height: auto;
-    border: 2px solid var(--text-color);
-    margin: 20px 0;
-    box-shadow: 6px 6px 0px rgba(0,0,0,0.1);
-    filter: grayscale(100%); 
-    transition: filter 0.3s;
-}
-
-.project-image:hover { filter: grayscale(0%); }
-
-.project-title { background: var(--text-color); color: var(--bg-color); padding: 8px 12px; display: inline-block; font-family: 'Press Start 2P'; font-size: 14px; margin-bottom: 10px; }
-.project-links a { display: inline-block; margin-right: 20px; text-decoration: none; color: var(--text-color); border-bottom: 2px solid var(--text-color); font-weight: bold; }
-
-/* --- FOOTER & COPY BUTTON --- */
-footer { margin-top: 100px; padding-bottom: 40px; font-family: 'Press Start 2P'; font-size: 10px; opacity: 0.6; text-align: center; }
-
-.system-status { font-family: 'Press Start 2P', monospace; font-size: 10px; opacity: 0.5; margin-top: 10px; letter-spacing: 1px; }
-
-.copy-email-btn {
-    background: #2c2c2c;
-    color: #f3d2b3;
-    border: none;
-    font-family: 'Press Start 2P';
-    font-size: 10px;
-    padding: 8px 12px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.copy-email-btn:active { transform: translateY(2px); }
-
-@media (max-width: 700px) {
-    .skill-split { grid-template-columns: 1fr; }
-    .integration-grid { grid-template-columns: 1fr; }
-    .typewriter h1 { font-size: 18px; white-space: normal; animation: none; border: none; }
-    #canvas-container { height: 35vh; }
-}
-
-/* --- PRINT STYLES --- */
-@media print {
-    body { background: #fff; color: #000; }
-    .nav-bar, #canvas-container, .scroll-top-btn, .copy-email-btn, .status-badge { display: none !important; }
-    .container { max-width: 100%; padding: 0; text-align: left; }
-    .project-card, .integration-grid { break-inside: avoid; border: 1px solid #ccc; box-shadow: none; background: #fff; }
-    h1, h2 { color: #000; border-bottom: 1px solid #000; }
-    a { text-decoration: none; color: #000; }
-    .typewriter h1 { border: none; animation: none; font-size: 24pt; }
-    .tag { border: 1px solid #000; }
-    .skill-list li:hover::after { display: none; } /* Hide tooltips on print */
-}
+window.addEventListener('resize', () => {
+    const height = window.innerHeight * 0.45;
+    camera.aspect = window.innerWidth / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, height);
+});
