@@ -1,72 +1,154 @@
-// --- DATA FOR MODALS ---
+// --- DATA FOR INTERACTIVE SIMULATORS ---
 const workflowData = {
     finance: {
+        type: "interactive",
         title: "Finance & Accounting Sync",
-        desc: "Stop manually entering data. This automation ensures your books are always 100% accurate for VAT returns.",
-        steps: [
-            "Trigger: New Order Created in Shopify",
-            "Logic: Check if order is Paid & Unfulfilled",
-            "Action: Create/Update Invoice in Xero",
-            "Action: Email Chartered Accountant (Optional)"
-        ]
+        desc: "See how Shopify orders instantly become valid tax invoices in Xero.",
+        inputLabel: "INPUT: New Order Total (£)",
+        placeholder: "150.00",
+        btnText: "[ GENERATE INVOICE ]",
+        template: (input) => `
+            <div class="xero-card">
+                <div style="border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:10px; display:flex; justify-content:space-between;">
+                    <span style="color:#00b7ff; font-weight:bold;">Xero Invoice #INV-2024</span>
+                    <span style="color:#0ba934;">PAID</span>
+                </div>
+                <div style="font-size:12px; color:#555;">
+                    <div><strong>To:</strong> Customer via Shopify</div>
+                    <div><strong>Date:</strong> ${new Date().toLocaleDateString('en-GB')}</div>
+                    <div style="margin-top:10px; font-size:16px; color:#000;">
+                        <strong>Total: £${input}</strong>
+                    </div>
+                    <div style="margin-top:5px; font-size:10px; color:#999;">VAT (20%): £${(input * 0.2).toFixed(2)} included</div>
+                </div>
+            </div>
+        `
     },
     fulfillment: {
+        type: "interactive",
         title: "Smart Fulfillment Routing",
-        desc: "Route orders to different warehouses based on customer location (UK vs EU) or product tag.",
-        steps: [
-            "Trigger: New Order",
-            "Logic: If Shipping Address is 'United Kingdom'",
-            "Action: Send to Manchester Hub (ShipStation)",
-            "Else: Send to EU Distribution Centre"
-        ]
+        desc: "Simulate how orders are routed to specific warehouses based on country.",
+        inputLabel: "INPUT: Shipping Country",
+        placeholder: "France",
+        btnText: "[ ROUTE ORDER ]",
+        template: (input) => {
+            const isUK = input.toLowerCase() === 'uk' || input.toLowerCase() === 'united kingdom';
+            const warehouse = isUK ? "MANCHESTER HUB (UK)" : "BERLIN CENTRE (EU)";
+            const color = isUK ? "#2c2c2c" : "#0052cc";
+            return `
+            <div class="shipping-label" style="border: 2px solid ${color};">
+                <div style="background:${color}; color:#fff; padding:5px; font-weight:bold; font-size:12px;">
+                    SHIPSTATION LABEL CREATED
+                </div>
+                <div style="padding:10px; text-align:center;">
+                    <div style="font-size:24px; font-weight:bold; margin-bottom:5px;">${input.toUpperCase()}</div>
+                    <div style="font-size:10px; color:#666;">ROUTED TO:</div>
+                    <div style="font-weight:bold;">${warehouse}</div>
+                    <div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:5px; font-family:monospace;">
+                        ||| |||| || ||||| |||
+                    </div>
+                </div>
+            </div>`;
+        }
     },
     ops: {
+        type: "interactive",
         title: "VIP & Return Tracking",
-        desc: "Keep your support team in the loop without giving them Shopify Admin access.",
-        steps: [
-            "Trigger: Order Refunded or Tagged 'VIP'",
-            "Action: Create Database Item in Notion",
-            "Action: Assign task to Support Agent"
-        ]
+        desc: "Type a customer note to see it tagged and logged in Notion.",
+        inputLabel: "INPUT: Customer Note",
+        placeholder: "Customer is asking for a refund...",
+        btnText: "[ SYNC TO NOTION ]",
+        template: (input) => `
+            <div class="notion-card">
+                <div style="font-weight:600; font-size:16px; margin-bottom:5px;">
+                    📄 Ticket #8492
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <span class="notion-tag tag-red">🔥 Urgent</span>
+                    <span class="notion-tag tag-blue">@Support</span>
+                </div>
+                <div style="color:#666; font-size:13px;">
+                    "${input}"
+                </div>
+            </div>
+        `
     },
     alerts: {
+        type: "interactive",
         title: "High-Value Order Alerts",
-        desc: "Celebrate wins and alert the team instantly when big orders come in.",
-        steps: [
-            "Trigger: New Order",
-            "Logic: If Total > £1,000",
-            "Action: Send message to #sales-wins Slack channel",
-            "Action: Play sound effect (optional)"
-        ]
+        desc: "Simulate a high-value order to trigger a team celebration in Slack.",
+        inputLabel: "INPUT: Order Value (£)",
+        placeholder: "2500",
+        btnText: "[ TEST ALERT ]",
+        template: (input) => `
+            <div class="slack-msg">
+                <div style="display:flex; gap:10px;">
+                    <div style="width:30px; height:30px; background:#000; border-radius:4px;"></div>
+                    <div>
+                        <div style="font-weight:bold; font-size:13px;">Shopify Bot <span style="font-weight:normal; color:#888; font-size:10px;">APP</span></div>
+                        <div style="font-size:14px; margin-top:2px;">
+                            🚨 <strong>BOOM! New High Value Order!</strong> 🚨
+                            <br>
+                            Value: <span style="background:#d1ffc4; padding:0 4px;">£${input}</span>
+                            <br>
+                            <i>Drinks are on us! 🍻</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
     }
 };
+
+let currentModalType = null;
 
 // --- MODAL FUNCTIONS ---
 function openModal(type) {
     const data = workflowData[type];
     if(!data) return;
+    
+    currentModalType = type; // Store which one is open
 
     const modalBody = document.getElementById('modal-body-content');
-    let stepsHtml = data.steps.map(step => `<div class="workflow-step">${step}</div>`).join('');
     
     modalBody.innerHTML = `
-        <div class="modal-header">
-            <h3>${data.title}</h3>
-        </div>
+        <div class="modal-header"><h3>${data.title}</h3></div>
         <div class="modal-body">
             <p>${data.desc}</p>
-            <br>
-            <strong>HOW IT WORKS:</strong>
-            <br><br>
-            ${stepsHtml}
+            <div class="demo-container">
+                <label class="demo-label">${data.inputLabel}</label>
+                <input type="text" id="demoInput" class="demo-input" placeholder="${data.placeholder}">
+                <button class="demo-btn" onclick="runDemo()">${data.btnText}</button>
+                <div id="demoResult" class="demo-result"></div>
+            </div>
         </div>
     `;
     
     document.getElementById('modal-overlay').classList.add('active');
 }
 
+function runDemo() {
+    const inputVal = document.getElementById('demoInput').value;
+    if(!inputVal) {
+        alert("Please enter a value to test the simulator!");
+        return;
+    }
+
+    const data = workflowData[currentModalType];
+    const resultBox = document.getElementById('demoResult');
+    
+    // Inject the specific HTML template for this workflow
+    resultBox.innerHTML = `
+        <label class="demo-label" style="margin-top:15px; color:#555;">OUTPUT SIMULATION:</label>
+        ${data.template(inputVal)}
+    `;
+    
+    resultBox.style.display = "block";
+}
+
 function closeModal() {
     document.getElementById('modal-overlay').classList.remove('active');
+    currentModalType = null;
 }
 
 // --- COPY EMAIL FUNCTION ---
@@ -77,7 +159,7 @@ function copyEmail() {
     setTimeout(() => btn.innerText = "[ Copy Address ]", 2000);
 }
 
-// --- SCROLL LOGIC (New Feature) ---
+// --- SCROLL TO TOP & NAV HIGHLIGHT ---
 const scrollTopBtn = document.getElementById("scrollToTop");
 const navLinks = {
     home: document.getElementById('nav-home'),
@@ -87,31 +169,62 @@ const navLinks = {
 };
 
 window.addEventListener('scroll', () => {
-    // 1. Show/Hide Scroll to Top Button
+    // 1. Scroll to Top Visibility
     if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
         scrollTopBtn.classList.add("visible");
     } else {
         scrollTopBtn.classList.remove("visible");
     }
 
-    // 2. Highlight Active Section in Nav
+    // 2. Nav Highlight
     let current = '';
     const sections = ['home', 'shopify', 'automation', 'contact'];
-    
     sections.forEach(section => {
         const element = document.getElementById(section);
-        if (element) {
-            const sectionTop = element.offsetTop;
-            // -300 is an offset so it highlights BEFORE you reach the exact top
-            if (scrollY >= (sectionTop - 300)) {
-                current = section;
-            }
+        if (element && scrollY >= (element.offsetTop - 300)) {
+            current = section;
         }
     });
 
     Object.values(navLinks).forEach(link => link.classList.remove('active'));
-    if (navLinks[current]) {
-        navLinks[current].classList.add('active');
+    if (navLinks[current]) navLinks[current].classList.add('active');
+});
+
+// --- LIVE UK TIME ---
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour12: false });
+    const timeEl = document.getElementById('uk-time');
+    if(timeEl) timeEl.innerText = timeString + " GMT";
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// --- KONAMI CODE ---
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let konamiIndex = 0;
+
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === konamiCode[konamiIndex].toLowerCase()) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+            alert("★ SECRET UNLOCKED: GOD MODE ACTIVATED ★");
+            const spinInterval = setInterval(() => {
+                wireframe.rotation.x += 0.1;
+                wireframe.rotation.y += 0.1;
+                wireframe.scale.x = Math.sin(Date.now() / 100) * 2;
+            }, 16);
+            document.body.style.filter = "invert(1) hue-rotate(180deg)";
+            setTimeout(() => {
+                clearInterval(spinInterval);
+                document.body.style.filter = "";
+                wireframe.scale.set(1, 1, 1);
+                alert("System Restored.");
+            }, 5000);
+            konamiIndex = 0;
+        }
+    } else {
+        konamiIndex = 0;
     }
 });
 
