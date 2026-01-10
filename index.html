@@ -5,30 +5,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abhi Pandrate - Shopify & Automation</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --bg-color: #f3d2b3; 
+            --text-color: #2c2c2c; 
+            --accent-color: #d15858;
+            --code-bg: rgba(44, 44, 44, 0.05);
+            --modal-overlay: rgba(44, 44, 44, 0.9);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'VT323', monospace;
+            font-size: 22px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- 3D CANVAS --- */
+        #canvas-container {
+            position: relative; 
+            width: 100%;
+            height: 45vh; 
+            overflow: hidden;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 0 20px 100px 20px;
+            text-align: center;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3 {
+            font-family: 'Press Start 2P', cursive;
+            text-transform: uppercase;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .typewriter { display: inline-block; }
+        .typewriter h1 {
+            overflow: hidden; 
+            border-right: .15em solid orange; 
+            white-space: nowrap; 
+            margin: 0 auto; 
+            letter-spacing: -2px; 
+            animation: typing 3.5s steps(30, end), blink-caret .75s step-end infinite;
+            font-size: 28px;
+        }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--text-color); } }
+
+        h2 { 
+            font-size: 18px; 
+            background: var(--text-color); 
+            color: var(--bg-color); 
+            display: inline-block; 
+            padding: 10px 15px; 
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+        }
+
+        p { margin-bottom: 25px; max-width: 650px; margin-left: auto; margin-right: auto; }
+
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+        }
+        .nav-btn {
+            background: #4a4a4a;
+            color: white;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+            border: 2px solid var(--text-color);
+        }
+        .nav-btn:hover { background: #2c2c2c; transform: translate(-1px, -1px); }
+        .nav-icon { width: 16px; height: 16px; }
+
+        /* --- UI ELEMENTS --- */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Press Start 2P';
+            font-size: 10px;
+            background: rgba(255,255,255,0.3);
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--text-color);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff00;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00ff00;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .separator { margin: 40px 0; letter-spacing: 3px; opacity: 0.4; font-family: monospace; }
+        
+        .tag-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin: 25px 0; }
+        .tag { border: 2px dotted var(--text-color); padding: 6px 10px; font-family: 'Press Start 2P', cursive; font-size: 10px; text-transform: uppercase; color: var(--text-color); text-decoration: none; }
+        .tag.filled { background: var(--text-color); color: var(--bg-color); border: 2px solid var(--text-color); }
+        .tag.action-btn { background: var(--accent-color); color: #fff; border: 2px solid #2c2c2c; }
+        .tag.cv-btn { background: #4a4a4a; color: #fff; display: inline-flex; align-items: center; border: 2px solid #222; }
+        .tag.cv-btn:hover { background: #2c2c2c; box-shadow: 4px 4px 0 rgba(0,0,0,0.3); transform: translateY(-2px); }
+
+        /* --- SKILLS GRID --- */
+        .skill-split { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left; margin-bottom: 60px; }
+        .skill-col { background: var(--code-bg); padding: 20px; border: 2px solid var(--text-color); position: relative; }
+        .skill-col h3 { font-size: 16px; border-bottom: 2px dotted var(--text-color); display: inline-block; margin-bottom: 15px; }
+        .skill-list { list-style: none; font-size: 18px; }
+        .skill-list li::before { content: "> "; color: var(--accent-color); font-weight: bold; }
+
+        /* --- PROJECTS --- */
+        .project-card { margin-bottom: 60px; text-align: left; border-left: 4px solid var(--text-color); padding-left: 20px; background: rgba(255,255,255,0.1); }
+        .project-image { width: 100%; height: auto; border: 2px solid var(--text-color); margin: 20px 0; box-shadow: 6px 6px 0px rgba(0,0,0,0.1); filter: grayscale(100%); transition: filter 0.3s; }
+        .project-image:hover { filter: grayscale(0%); }
+        .project-title { background: var(--text-color); color: var(--bg-color); padding: 8px 12px; display: inline-block; font-family: 'Press Start 2P'; font-size: 14px; margin-bottom: 10px; }
+        .project-links a { display: inline-block; margin-right: 20px; text-decoration: none; color: var(--text-color); border-bottom: 2px solid var(--text-color); font-weight: bold; }
+
+        /* --- AUTOMATION GRID --- */
+        .integration-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; text-align: left; }
+        .integration-item { background: rgba(255,255,255,0.4); border: 2px solid var(--text-color); padding: 15px; display: flex; align-items: center; gap: 15px; transition: transform 0.2s; cursor: pointer; }
+        .integration-item:hover { transform: translateY(-2px); background: #fff; box-shadow: 4px 4px 0px rgba(0,0,0,0.1); }
+        .app-icons { display: flex; align-items: center; gap: 10px; min-width: 100px; }
+        .app-icon { width: 36px; height: 36px; background: #fff; border-radius: 6px; padding: 4px; object-fit: contain; border: 1px solid #333; }
+        .arrow { font-family: 'Press Start 2P'; font-size: 10px; color: var(--accent-color); }
+        .integration-info h4 { font-family: 'Press Start 2P'; font-size: 12px; margin-bottom: 5px; }
+        .integration-info span { font-size: 16px; opacity: 0.8; display: block; line-height: 1.3; }
+
+        /* --- MODAL & SIMULATOR --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-overlay); z-index: 9999; /* High Z-index to fix click issues */
+            display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: #f3d2b3; color: #2c2c2c; width: 90%; max-width: 600px;
+            border: 4px solid #2c2c2c; padding: 30px; position: relative;
+            box-shadow: 10px 10px 0px #000; text-align: left;
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 15px; background: #d15858;
+            color: white; border: 2px solid #2c2c2c; width: 30px; height: 30px;
+            font-family: 'Press Start 2P'; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        
+        /* Simulator Styles */
+        .demo-container { background: rgba(255,255,255,0.5); border: 2px dashed var(--text-color); padding: 15px; margin-top: 20px; }
+        .demo-label { font-size: 12px; font-weight: bold; margin-bottom: 8px; display: block; font-family: monospace; }
+        .demo-input { width: 100%; background: #fff; border: 2px solid var(--text-color); padding: 10px; font-family: 'VT323', monospace; font-size: 18px; color: #000; margin-bottom: 10px; }
+        .demo-btn { background: var(--text-color); color: var(--bg-color); border: none; padding: 10px; font-family: 'Press Start 2P'; font-size: 10px; cursor: pointer; width: 100%; }
+        .demo-btn:hover { background: var(--accent-color); color: #fff; }
+        .demo-result { margin-top: 20px; display: none; animation: slideDown 0.3s ease-out; }
+        
+        /* Result Cards */
+        .xero-card, .shipping-label, .notion-card, .slack-msg { background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 4px; font-family: sans-serif; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .notion-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 12px; font-weight: 500; margin-right: 5px; }
+        .tag-red { background: #ffe2dd; color: #d44c47; }
+        .tag-blue { background: #e3e2e0; color: #37352f; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- FOOTER --- */
+        footer { margin-top: 100px; padding-bottom: 40px; font-family: 'Press Start 2P'; font-size: 10px; opacity: 0.6; text-align: center; }
+        .system-status { font-family: 'Press Start 2P', monospace; font-size: 10px; opacity: 0.5; margin-top: 10px; letter-spacing: 1px; }
+        .copy-email-btn { background: #2c2c2c; color: #f3d2b3; border: none; font-family: 'Press Start 2P'; font-size: 10px; padding: 8px 12px; cursor: pointer; margin-left: 10px; }
+
+        @media (max-width: 700px) {
+            .skill-split, .integration-grid { grid-template-columns: 1fr; }
+            .typewriter h1 { font-size: 18px; white-space: normal; animation: none; border: none; }
+            #canvas-container { height: 35vh; }
+        }
+    </style>
 </head>
 <body>
 
     <div class="nav-bar">
-        <a href="#home" class="nav-btn" id="nav-home" title="Home">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 3L2 12H5V20H10V14H14V20H19V12H22L12 3Z"/>
-            </svg>
+        <a href="#home" class="nav-btn" title="Home">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L2 12H5V20H10V14H14V20H19V12H22L12 3Z"/></svg>
         </a>
-        <a href="#shopify" class="nav-btn" id="nav-shopify" title="Shopify Work"><img src="https://cdn.simpleicons.org/shopify/ffffff" class="nav-icon" alt="Shopify"></a>
-        <a href="#automation" class="nav-btn" id="nav-automation" title="Automation"><img src="https://cdn.simpleicons.org/make/ffffff" class="nav-icon" alt="Automation"></a>
-        <a href="#contact" class="nav-btn" id="nav-contact" title="Contact"><img src="https://cdn.simpleicons.org/gmail/ffffff" class="nav-icon" alt="Contact"></a>
+        <a href="#shopify" class="nav-btn" title="Shopify Work"><img src="https://cdn.simpleicons.org/shopify/ffffff" class="nav-icon" alt="Shopify"></a>
+        <a href="#automation" class="nav-btn" title="Automation"><img src="https://cdn.simpleicons.org/make/ffffff" class="nav-icon" alt="Automation"></a>
+        <a href="#contact" class="nav-btn" title="Contact"><img src="https://cdn.simpleicons.org/gmail/ffffff" class="nav-icon" alt="Contact"></a>
     </div>
-
-    <button id="scrollToTop" class="scroll-top-btn" onclick="window.scrollTo(0,0)">↑</button>
 
     <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeModal()">X</button>
-            <div id="modal-body-content">
-                </div>
+            <div id="modal-body-content"></div>
         </div>
     </div>
 
@@ -37,32 +230,16 @@
     <div class="container">
         
         <div id="home">
-            <div class="status-badge">
-                <div class="status-dot"></div>
-                AVAILABLE FOR WORK
-            </div>
-            
+            <div class="status-badge"><div class="status-dot"></div>AVAILABLE FOR WORK</div>
             <br>
-
-            <div style="margin-bottom: 20px;">
-                <span class="retro-label">HI THERE.</span>
-            </div>
-            
-            <div class="typewriter">
-                <h1>I'm Abhi Pandrate</h1>
-            </div>
-            
-            <div class="tag-container">
-                <span class="tag filled">Shopify Developer</span>
-                <span class="tag filled">Automation Maker</span>
-            </div>
+            <div style="margin-bottom: 20px;"><span style="font-family: 'Press Start 2P'; font-size: 12px; background: #2c2c2c; color: #f3d2b3; padding: 5px 10px;">HI THERE.</span></div>
+            <div class="typewriter"><h1>I'm Abhi Pandrate</h1></div>
+            <div class="tag-container"><span class="tag filled">Shopify Developer</span><span class="tag filled">Automation Maker</span></div>
         </div>
 
         <div class="separator">----------------------------------------</div>
 
-        <p>
-            I help e-commerce brands scale by connecting their store to their systems. I build high-performance Shopify themes and design invisible automation engines.
-        </p>
+        <p>I help e-commerce brands scale by connecting their store to their systems. I build high-performance Shopify themes and design invisible automation engines.</p>
 
         <div class="separator">----------------------------------------</div>
 
@@ -73,22 +250,21 @@
             <div class="skill-col">
                 <h3>01. Shopify Dev</h3>
                 <ul class="skill-list">
-                    <li data-tooltip="Clean, efficient Liquid code for OS 2.0">Liquid Templating</li>
-                    <li data-tooltip="JSON templates & Sections everywhere">Theme Architecture (2.0)</li>
-                    <li data-tooltip="DNS, Shipping, Payment Gateways">Store Setup & Config</li>
-                    <li data-tooltip="Passing Core Web Vitals (LCP/CLS)">Frontend Optimisation</li>
-                    <li data-tooltip="CSV Bulk Edits & Matrixify">Product Mgmt</li>
+                    <li>Liquid Templating</li>
+                    <li>Theme Architecture (2.0)</li>
+                    <li>Store Setup & Config</li>
+                    <li>Frontend Optimisation</li>
+                    <li>Product Mgmt</li>
                 </ul>
             </div>
-
             <div class="skill-col">
                 <h3>02. Automation</h3>
                 <ul class="skill-list">
-                    <li data-tooltip="Complex multi-step logic"><strong>Make.com</strong> Scenarios</li>
-                    <li data-tooltip="Self-hosted workflows"><strong>n8n</strong> Workflows</li>
-                    <li data-tooltip="Connecting headless tools">API Integrations</li>
-                    <li data-tooltip="Moving large datasets">Data Migration</li>
-                    <li data-tooltip="Native Shopify automation">Shopify Flow</li>
+                    <li><strong>Make.com</strong> Scenarios</li>
+                    <li><strong>n8n</strong> Workflows</li>
+                    <li>API Integrations</li>
+                    <li>Data Migration</li>
+                    <li>Shopify Flow</li>
                 </ul>
             </div>
         </div>
@@ -99,123 +275,181 @@
         <div class="separator">...........</div>
 
         <div class="project-card">
-            <div>
-                <div class="project-title">Charlie Oven</div>
-                <span class="year-label">2024 - PRESENT</span>
-            </div>
-            
-            <div class="tag-container" style="justify-content: flex-start;">
-                <span class="tag">Theme Redesign</span>
-                <span class="tag">UI/UX</span>
-                <span class="tag">Liquid</span>
-            </div>
-
+            <div><div class="project-title">Charlie Oven</div><span class="year-label">2024 - PRESENT</span></div>
+            <div class="tag-container" style="justify-content: flex-start;"><span class="tag">Theme Redesign</span><span class="tag">UI/UX</span><span class="tag">Liquid</span></div>
             <img src="charlie-oven.jpg" onerror="this.src='https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=800&h=450'" alt="Charlie Oven Website" class="project-image">
-
-            <p>
-                <strong>The Goal:</strong> Modernise the storefront and streamline operations.
-            </p>
-            <p>
-                I completely rebuilt the theme for better aesthetics and conversion. I also handled full product data setup and inventory management.
-            </p>
-            
-            <div class="project-links">
-                <a href="#">View Site →</a>
-            </div>
+            <p><strong>The Goal:</strong> Modernise the storefront and streamline operations.</p>
+            <p>I completely rebuilt the theme for better aesthetics and conversion. I also handled full product data setup and inventory management.</p>
+            <div class="project-links"><a href="#">View Site →</a></div>
         </div>
 
         <div class="separator">----------------------------------------</div>
 
         <h2 id="automation">Automation</h2>
-        <p style="margin-bottom: 40px;">
-            Click any workflow below to launch the <strong>Live Simulator</strong>.
-        </p>
+        <p style="margin-bottom: 40px;">Click any workflow below to launch the <strong>Live Simulator</strong>.</p>
         
         <div class="integration-grid">
-            
             <div class="integration-item" onclick="openModal('finance')">
-                <div class="app-icons">
-                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
-                    <div class="arrow">-></div>
-                    <img src="https://cdn.brandfetch.io/xero.com/w/100/h/100" class="app-icon" alt="Xero">
-                </div>
-                <div class="integration-info">
-                    <h4>Finance Sync</h4>
-                    <span>Auto-create Xero invoices.</span>
-                </div>
+                <div class="app-icons"><img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon"><div class="arrow">-></div><img src="https://cdn.brandfetch.io/xero.com/w/100/h/100" class="app-icon"></div>
+                <div class="integration-info"><h4>Finance Sync</h4><span>Auto-create Xero invoices.</span></div>
             </div>
-
             <div class="integration-item" onclick="openModal('fulfillment')">
-                <div class="app-icons">
-                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
-                    <div class="arrow">-></div>
-                    <img src="https://cdn.brandfetch.io/shipstation.com/w/100/h/100" class="app-icon" alt="ShipStation">
-                </div>
-                <div class="integration-info">
-                    <h4>Fulfillment</h4>
-                    <span>Route orders instantly.</span>
-                </div>
+                <div class="app-icons"><img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon"><div class="arrow">-></div><img src="https://cdn.brandfetch.io/shipstation.com/w/100/h/100" class="app-icon"></div>
+                <div class="integration-info"><h4>Fulfillment</h4><span>Route orders instantly.</span></div>
             </div>
-
             <div class="integration-item" onclick="openModal('ops')">
-                <div class="app-icons">
-                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
-                    <div class="arrow">-></div>
-                    <img src="https://cdn.brandfetch.io/notion.so/w/100/h/100" class="app-icon" alt="Notion">
-                </div>
-                <div class="integration-info">
-                    <h4>Operations</h4>
-                    <span>Log returns & VIPs.</span>
-                </div>
+                <div class="app-icons"><img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon"><div class="arrow">-></div><img src="https://cdn.brandfetch.io/notion.so/w/100/h/100" class="app-icon"></div>
+                <div class="integration-info"><h4>Operations</h4><span>Log returns & VIPs.</span></div>
             </div>
-
             <div class="integration-item" onclick="openModal('alerts')">
-                <div class="app-icons">
-                    <img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon" alt="Shopify">
-                    <div class="arrow">-></div>
-                    <img src="https://cdn.brandfetch.io/slack.com/w/100/h/100" class="app-icon" alt="Slack">
-                </div>
-                <div class="integration-info">
-                    <h4>Team Alerts</h4>
-                    <span>High Value Order pings.</span>
-                </div>
+                <div class="app-icons"><img src="https://cdn.brandfetch.io/shopify.com/w/100/h/100" class="app-icon"><div class="arrow">-></div><img src="https://cdn.brandfetch.io/slack.com/w/100/h/100" class="app-icon"></div>
+                <div class="integration-info"><h4>Team Alerts</h4><span>High Value Order pings.</span></div>
             </div>
-
         </div>
 
         <div class="separator">----------------------------------------</div>
 
         <h2 id="contact">Contact</h2>
         <p>Ready to build or automate?</p>
-        
         <div class="tag-container">
             <a href="mailto:abhinavpandrate@gmail.com" class="tag action-btn">Email Me</a>
-            
-            <a href="resume.pdf" target="_blank" class="tag cv-btn">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM16 18H8V14H16V18ZM16 12H8V8H16V12Z"/></svg>
-                SAVE_CV.EXE
-            </a>
-
+            <a href="resume.pdf" target="_blank" class="tag cv-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM16 18H8V14H16V18ZM16 12H8V8H16V12Z"/></svg>SAVE_CV.EXE</a>
             <button class="copy-email-btn" onclick="copyEmail()">[ Copy Address ]</button>
         </div>
-        
         <br>
-
-        <div class="tag-container">
-            <a href="#" target="_blank" class="tag">LinkedIn</a>
-            <a href="#" target="_blank" class="tag">GitHub</a>
-        </div>
+        <div class="tag-container"><a href="#" target="_blank" class="tag">LinkedIn</a><a href="#" target="_blank" class="tag">GitHub</a></div>
 
         <footer>
             COPYRIGHT © 2024 ABHI PANDRATE
             <br><br>
-            <div class="system-status">
-                [ SYSTEM: ONLINE ] [ LOC: UK <span id="uk-time">00:00:00</span> ]
-            </div>
+            <div class="system-status">[ SYSTEM: ONLINE ] [ LOC: UK <span id="uk-time">00:00:00</span> ]</div>
         </footer>
-
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // --- DATA FOR SIMULATORS ---
+        const workflowData = {
+            finance: {
+                title: "Finance & Accounting Sync",
+                desc: "See how Shopify orders instantly become valid tax invoices in Xero.",
+                inputLabel: "INPUT: New Order Total (£)",
+                placeholder: "150.00",
+                btnText: "[ GENERATE INVOICE ]",
+                template: (input) => `
+                    <div class="xero-card">
+                        <div style="border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:10px; display:flex; justify-content:space-between;"><span style="color:#00b7ff; font-weight:bold;">Xero Invoice #INV-2024</span><span style="color:#0ba934;">PAID</span></div>
+                        <div style="font-size:12px; color:#555;">
+                            <div><strong>To:</strong> Customer via Shopify</div>
+                            <div><strong>Date:</strong> ${new Date().toLocaleDateString('en-GB')}</div>
+                            <div style="margin-top:10px; font-size:16px; color:#000;"><strong>Total: £${input}</strong></div>
+                            <div style="margin-top:5px; font-size:10px; color:#999;">VAT (20%): £${(input * 0.2).toFixed(2)} included</div>
+                        </div>
+                    </div>`
+            },
+            fulfillment: {
+                title: "Smart Fulfillment Routing",
+                desc: "Simulate how orders are routed to specific warehouses based on country.",
+                inputLabel: "INPUT: Shipping Country",
+                placeholder: "France",
+                btnText: "[ ROUTE ORDER ]",
+                template: (input) => {
+                    const isUK = input.toLowerCase() === 'uk' || input.toLowerCase() === 'united kingdom';
+                    const warehouse = isUK ? "MANCHESTER HUB (UK)" : "BERLIN CENTRE (EU)";
+                    const color = isUK ? "#2c2c2c" : "#0052cc";
+                    return `<div class="shipping-label" style="border: 2px solid ${color};"><div style="background:${color}; color:#fff; padding:5px; font-weight:bold; font-size:12px;">SHIPSTATION LABEL CREATED</div><div style="padding:10px; text-align:center;"><div style="font-size:24px; font-weight:bold; margin-bottom:5px;">${input.toUpperCase()}</div><div style="font-size:10px; color:#666;">ROUTED TO:</div><div style="font-weight:bold;">${warehouse}</div><div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:5px; font-family:monospace;">||| |||| || ||||| |||</div></div></div>`;
+                }
+            },
+            ops: {
+                title: "VIP & Return Tracking",
+                desc: "Type a customer note to see it tagged and logged in Notion.",
+                inputLabel: "INPUT: Customer Note",
+                placeholder: "Customer is asking for a refund...",
+                btnText: "[ SYNC TO NOTION ]",
+                template: (input) => `
+                    <div class="notion-card">
+                        <div style="font-weight:600; font-size:16px; margin-bottom:5px;">📄 Ticket #8492</div>
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><span class="notion-tag tag-red">🔥 Urgent</span><span class="notion-tag tag-blue">@Support</span></div>
+                        <div style="color:#666; font-size:13px;">"${input}"</div>
+                    </div>`
+            },
+            alerts: {
+                title: "High-Value Order Alerts",
+                desc: "Simulate a high-value order to trigger a team celebration in Slack.",
+                inputLabel: "INPUT: Order Value (£)",
+                placeholder: "2500",
+                btnText: "[ TEST ALERT ]",
+                template: (input) => `
+                    <div class="slack-msg">
+                        <div style="display:flex; gap:10px;"><div style="width:30px; height:30px; background:#000; border-radius:4px;"></div><div><div style="font-weight:bold; font-size:13px;">Shopify Bot <span style="font-weight:normal; color:#888; font-size:10px;">APP</span></div><div style="font-size:14px; margin-top:2px;">🚨 <strong>BOOM! New High Value Order!</strong> 🚨<br>Value: <span style="background:#d1ffc4; padding:0 4px;">£${input}</span><br><i>Drinks are on us! 🍻</i></div></div></div>
+                    </div>`
+            }
+        };
+
+        let currentModalType = null;
+
+        function openModal(type) {
+            const data = workflowData[type];
+            if(!data) return;
+            currentModalType = type;
+            const modalBody = document.getElementById('modal-body-content');
+            modalBody.innerHTML = `
+                <div class="modal-header"><h3>${data.title}</h3></div>
+                <div class="modal-body">
+                    <p>${data.desc}</p>
+                    <div class="demo-container">
+                        <label class="demo-label">${data.inputLabel}</label>
+                        <input type="text" id="demoInput" class="demo-input" placeholder="${data.placeholder}">
+                        <button class="demo-btn" onclick="runDemo()">${data.btnText}</button>
+                        <div id="demoResult" class="demo-result"></div>
+                    </div>
+                </div>`;
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        function runDemo() {
+            const inputVal = document.getElementById('demoInput').value;
+            if(!inputVal) { alert("Please enter a value to test the simulator!"); return; }
+            const data = workflowData[currentModalType];
+            const resultBox = document.getElementById('demoResult');
+            resultBox.innerHTML = `<label class="demo-label" style="margin-top:15px; color:#555;">OUTPUT SIMULATION:</label>${data.template(inputVal)}`;
+            resultBox.style.display = "block";
+        }
+
+        function closeModal() { document.getElementById('modal-overlay').classList.remove('active'); currentModalType = null; }
+
+        function copyEmail() {
+            navigator.clipboard.writeText("abhinavpandrate@gmail.com");
+            const btn = document.querySelector('.copy-email-btn');
+            btn.innerText = "[ COPIED! ]";
+            setTimeout(() => btn.innerText = "[ Copy Address ]", 2000);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour12: false });
+            const timeEl = document.getElementById('uk-time');
+            if(timeEl) timeEl.innerText = timeString + " GMT";
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // --- THREE.JS SETUP ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / (window.innerHeight * 0.45), 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight * 0.45);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        const geometry = new THREE.IcosahedronGeometry(2.3, 0);
+        const edges = new THREE.EdgesGeometry(geometry);
+        const material = new THREE.LineBasicMaterial({ color: 0x2c2c2c, linewidth: 2 });
+        const wireframe = new THREE.LineSegments(edges, material);
+        scene.add(wireframe);
+        camera.position.z = 5;
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = (e.clientX / window.innerWidth) * 2 - 1; mouseY = -(e.clientY / window.innerHeight) * 2 + 1; });
+        function animate() { requestAnimationFrame(animate); wireframe.rotation.x += 0.003 + (mouseY * 0.005); wireframe.rotation.y += 0.003 + (mouseX * 0.005); renderer.render(scene, camera); }
+        animate();
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / (window.innerHeight * 0.45); camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight * 0.45); });
+    </script>
 </body>
 </html>
